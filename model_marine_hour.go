@@ -9,7 +9,7 @@
 
 package swagger
 
-type ForecastHour struct {
+type MarineHour struct {
 	TimeEpoch int32 `json:"time_epoch,omitempty"`
 	Time string `json:"time,omitempty"`
 	TempC float32 `json:"temp_c,omitempty"`
@@ -42,5 +42,11 @@ type ForecastHour struct {
 	VisMiles float32 `json:"vis_miles,omitempty"`
 	GustMph float32 `json:"gust_mph,omitempty"`
 	GustKph float32 `json:"gust_kph,omitempty"`
+	SigHtMt float32 `json:"sig_ht_mt,omitempty"`
+	SwellHtMt float32 `json:"swell_ht_mt,omitempty"`
+	SwellHtFt float32 `json:"swell_ht_ft,omitempty"`
+	SwellDir float32 `json:"swell_dir,omitempty"`
+	SwellDir16Point float32 `json:"swell_dir_16_point,omitempty"`
+	SwellPeriodSecs float32 `json:"swell_period_secs,omitempty"`
 	Uv int32 `json:"uv,omitempty"`
 }

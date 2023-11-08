@@ -1,14 +1,14 @@
-# Current
+# MarineHour
 
 ## Properties
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**LastUpdatedEpoch** | **int32** |  | [optional] [default to null]
-**LastUpdated** | **string** |  | [optional] [default to null]
+**TimeEpoch** | **int32** |  | [optional] [default to null]
+**Time** | **string** |  | [optional] [default to null]
 **TempC** | **float32** |  | [optional] [default to null]
 **TempF** | **float32** |  | [optional] [default to null]
 **IsDay** | **int32** |  | [optional] [default to null]
-**Condition** | [***CurrentCondition**](current_condition.md) |  | [optional] [default to null]
+**Condition** | [***ForecastCondition**](forecast_condition.md) |  | [optional] [default to null]
 **WindMph** | **float32** |  | [optional] [default to null]
 **WindKph** | **float32** |  | [optional] [default to null]
 **WindDegree** | **float32** |  | [optional] [default to null]
@@ -21,12 +21,27 @@ Name | Type | Description | Notes
 **Cloud** | **float32** |  | [optional] [default to null]
 **FeelslikeC** | **float32** |  | [optional] [default to null]
 **FeelslikeF** | **float32** |  | [optional] [default to null]
+**WindchillC** | **float32** |  | [optional] [default to null]
+**WindchillF** | **float32** |  | [optional] [default to null]
+**HeatindexC** | **float32** |  | [optional] [default to null]
+**HeatindexF** | **float32** |  | [optional] [default to null]
+**DewpointC** | **float32** |  | [optional] [default to null]
+**DewpointF** | **float32** |  | [optional] [default to null]
+**WillItRain** | **int32** |  | [optional] [default to null]
+**ChanceOfRain** | **float32** |  | [optional] [default to null]
+**WillItSnow** | **int32** |  | [optional] [default to null]
+**ChanceOfSnow** | **float32** |  | [optional] [default to null]
 **VisKm** | **float32** |  | [optional] [default to null]
 **VisMiles** | **float32** |  | [optional] [default to null]
-**Uv** | **int32** |  | [optional] [default to null]
 **GustMph** | **float32** |  | [optional] [default to null]
 **GustKph** | **float32** |  | [optional] [default to null]
-**AirQuality** | [***CurrentAirQuality**](current_air_quality.md) |  | [optional] [default to null]
+**SigHtMt** | **float32** |  | [optional] [default to null]
+**SwellHtMt** | **float32** |  | [optional] [default to null]
+**SwellHtFt** | **float32** |  | [optional] [default to null]
+**SwellDir** | **float32** |  | [optional] [default to null]
+**SwellDir16Point** | **float32** |  | [optional] [default to null]
+**SwellPeriodSecs** | **float32** |  | [optional] [default to null]
+**Uv** | **int32** |  | [optional] [default to null]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

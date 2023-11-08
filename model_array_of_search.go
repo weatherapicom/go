@@ -9,38 +9,5 @@
 
 package swagger
 
-type ForecastHour struct {
-	TimeEpoch int32 `json:"time_epoch,omitempty"`
-	Time string `json:"time,omitempty"`
-	TempC float32 `json:"temp_c,omitempty"`
-	TempF float32 `json:"temp_f,omitempty"`
-	IsDay int32 `json:"is_day,omitempty"`
-	Condition *ForecastCondition `json:"condition,omitempty"`
-	WindMph float32 `json:"wind_mph,omitempty"`
-	WindKph float32 `json:"wind_kph,omitempty"`
-	WindDegree float32 `json:"wind_degree,omitempty"`
-	WindDir string `json:"wind_dir,omitempty"`
-	PressureMb float32 `json:"pressure_mb,omitempty"`
-	PressureIn float32 `json:"pressure_in,omitempty"`
-	PrecipMm float32 `json:"precip_mm,omitempty"`
-	PrecipIn float32 `json:"precip_in,omitempty"`
-	Humidity float32 `json:"humidity,omitempty"`
-	Cloud float32 `json:"cloud,omitempty"`
-	FeelslikeC float32 `json:"feelslike_c,omitempty"`
-	FeelslikeF float32 `json:"feelslike_f,omitempty"`
-	WindchillC float32 `json:"windchill_c,omitempty"`
-	WindchillF float32 `json:"windchill_f,omitempty"`
-	HeatindexC float32 `json:"heatindex_c,omitempty"`
-	HeatindexF float32 `json:"heatindex_f,omitempty"`
-	DewpointC float32 `json:"dewpoint_c,omitempty"`
-	DewpointF float32 `json:"dewpoint_f,omitempty"`
-	WillItRain int32 `json:"will_it_rain,omitempty"`
-	ChanceOfRain float32 `json:"chance_of_rain,omitempty"`
-	WillItSnow int32 `json:"will_it_snow,omitempty"`
-	ChanceOfSnow float32 `json:"chance_of_snow,omitempty"`
-	VisKm float32 `json:"vis_km,omitempty"`
-	VisMiles float32 `json:"vis_miles,omitempty"`
-	GustMph float32 `json:"gust_mph,omitempty"`
-	GustKph float32 `json:"gust_kph,omitempty"`
-	Uv int32 `json:"uv,omitempty"`
+type ArrayOfSearch struct {
 }

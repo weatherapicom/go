@@ -13,11 +13,12 @@ Name | Type | Description | Notes
 **GeonameId** | **int32** |  | [optional] [default to null]
 **City** | **string** |  | [optional] [default to null]
 **Region** | **string** |  | [optional] [default to null]
-**Lat** | **float64** |  | [optional] [default to null]
-**Lon** | **float64** |  | [optional] [default to null]
+**Lat** | **float32** |  | [optional] [default to null]
+**Lon** | **float32** |  | [optional] [default to null]
 **TzId** | **string** |  | [optional] [default to null]
 **LocaltimeEpoch** | **int32** |  | [optional] [default to null]
 **Localtime** | **string** |  | [optional] [default to null]
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
+
 

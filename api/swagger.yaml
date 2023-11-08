@@ -1,2479 +1,1468 @@
-openapi: 3.0.0
+---
+swagger: "2.0"
 info:
-  title: Weather API
-  description: "\n# Introduction\n\nWeatherAPI.com provides access to weather and\
-    \ geo data via a JSON/XML restful API. It allows developers to create desktop,\
-    \ web and mobile applications using this data very easy.  \n\nWe provide following\
-    \ data through our API:    \n- Real-time weather\n- 14 day weather forecast\n\
-    - Astronomy\n- Time zone\n- Location data\n- Search or Autocomplete API\n- NEW:\
-    \ Historical weather\n- NEW: Future Weather (Upto 300 days ahead)\n- Weather Alerts\n\
-    - Air Quality Data\n\n# Getting Started  \n\nYou need to [signup](https://www.weatherapi.com/signup.aspx)\
-    \ and then you can find your API key under [your account](https://www.weatherapi.com/login.aspx),\
-    \ and start using API right away!  \n\nWe have [code libraries](https://www.weatherapi.com/docs/code-libraries.aspx)\
-    \ for different programming languages like PHP, .net, JAVA, etc.  If you find\
-    \ any features missing or have any suggestions, please [contact us](https://www.weatherapi.com/contact.aspx).\
-    \  \n\n# Authentication  \n\nAPI access to the data is protected by an API key.\
-    \ If at anytime, you find the API key has become vulnerable, please regenerate\
-    \ the key using Regenerate button next to the API key.  Authentication to the\
-    \ WeatherAPI.com API is provided by passing your API key as request parameter\
-    \ through an API .    \n\n##  key parameter \nkey=<YOUR API KEY> \n"
-  version: 1.0.0-oas3
-servers:
-- url: https://api.weatherapi.com/v1
+  description: "# Introduction\nWeatherAPI.com provides access to weather and geo\
+    \ data via a JSON/XML restful API. It allows developers to create desktop, web\
+    \ and mobile applications using this data very easy. We provide following data\
+    \ through our API:    \n- Real-time weather\n- 14 day weather forecast\n- Historical\
+    \ Weather\n- Marine Weather and Tide Data\n- Future Weather (Upto 365 days ahead)\n\
+    - Daily and hourly intervals\n- 15 min interval (Enterprise only)\n- Astronomy\n\
+    - Time zone\n- Location data\n- Sports\n- Search or Autocomplete API\n- Weather\
+    \ Alerts\n- Air Quality Data\n- Bulk Request\n\n# Getting Started  \n\nYou need\
+    \ to [signup](https://www.weatherapi.com/signup.aspx) and then you can find your\
+    \ API key under [your account](https://www.weatherapi.com/login.aspx), and start\
+    \ using API right away!\n\nTry our weather API by using interactive [API Explorer](https://www.weatherapi.com/api-explorer.aspx).\n\
+    \nWe also have SDK for popular framework/languages available on [Github](https://github.com/weatherapicom/)\
+    \ for quick integrations.\n\nIf you find any features missing or have any suggestions,\
+    \ please [contact us](https://www.weatherapi.com/contact.aspx).  \n\n# Authentication\
+    \  \n\nAPI access to the data is protected by an API key. If at anytime, you find\
+    \ the API key has become vulnerable, please regenerate the key using Regenerate\
+    \ button next to the API key.  \n\nAuthentication to the WeatherAPI.com API is\
+    \ provided by passing your API key as request parameter through an API .    \n\
+    \n##  key parameter \nkey=YOUR API KEY \n"
+  version: "1.0.2"
+  title: "Weather API"
+host: "api.weatherapi.com"
+basePath: "/v1"
 tags:
-- name: APIs
-  description: APIs
+- name: "APIs"
+  description: "APIs"
+schemes:
+- "https"
+produces:
+- "application/json"
+- "application/xml"
 paths:
   /current.json:
     get:
       tags:
-      - APIs
-      summary: Realtime API
-      description: Current weather or realtime weather API method allows a user to
-        get up to date current weather information in json and xml. The data is returned
-        as a Current Object.<br /><br />Current object contains current or realtime
-        weather information for a given city.
-      operationId: realtime-weather
+      - "APIs"
+      summary: "Realtime API"
+      description: "Current weather or realtime weather API method allows a user to\
+        \ get up to date current weather information in json and xml. The data is\
+        \ returned as a Current Object.<br /><br />Current object contains current\
+        \ or realtime weather information for a given city."
+      operationId: "realtime-weather"
       parameters:
-      - name: q
-        in: query
+      - name: "q"
+        in: "query"
         description: "Pass US Zipcode, UK Postcode, Canada Postalcode, IP address,\
           \ Latitude/Longitude (decimal degree) or city name. Visit [request parameter\
           \ section](https://www.weatherapi.com/docs/#intro-request) to learn more."
         required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-      - name: lang
-        in: query
+        type: "string"
+        x-exportParamName: "Q"
+      - name: "lang"
+        in: "query"
         description: "Returns 'condition:text' field in API in the desired language.<br\
           \ /> Visit [request parameter section](https://www.weatherapi.com/docs/#intro-request)\
           \ to check 'lang-code'."
         required: false
-        style: form
-        explode: true
-        schema:
-          type: string
+        type: "string"
+        x-exportParamName: "Lang"
+        x-optionalDataType: "String"
+      security:
+      - ApiKeyAuth: []
       responses:
         "200":
-          description: Ok
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_200'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/inline_response_200'
+          description: "Ok"
+          schema:
+            properties:
+              location:
+                $ref: "#/definitions/location"
+              current:
+                $ref: "#/definitions/current"
         "400":
           description: "Error code 1003: Parameter 'q' not provided.<br />Error code\
             \ 1005: API request url is invalid.<br />Error code 1006: No location\
-            \ found matching parameter 'q'<br />Error code 9999: Internal application\
-            \ error."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error400'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/error400'
+            \ found matching parameter 'q'<br />Error code 9000: Json body passed\
+            \ in bulk request is invalid. Please make sure it is valid json with utf-8\
+            \ encoding.<br />Error code 9001: Json body contains too many locations\
+            \ for bulk request. Please keep it below 50 in a single request.<br />Error\
+            \ code 9999: Internal application error."
+          schema:
+            $ref: "#/definitions/error400"
         "401":
           description: "Error code 1002: API key not provided.<br />Error code 2006:\
             \ API key provided is invalid"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error401'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/error401'
+          schema:
+            $ref: "#/definitions/error401"
         "403":
           description: "Error code 2007: API key has exceeded calls per month quota.<br\
-            \ />Error code 2008: API key has been disabled."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error403'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/error403'
-      security:
-      - ApiKeyAuth: []
+            \ />Error code 2008: API key has been disabled.<br />Error code 2009:\
+            \ API key does not have access to the resource. Please check pricing page\
+            \ for what is allowed in your API subscription plan."
+          schema:
+            $ref: "#/definitions/error403"
   /forecast.json:
     get:
       tags:
-      - APIs
-      summary: Forecast API
-      description: "Forecast weather API method returns upto next 10 day weather forecast\
-        \ and weather alert as json. The data is returned as a Forecast Object.<br\
-        \ /><br />Forecast object contains astronomy data, day weather forecast and\
-        \ hourly interval weather information for a given city."
-      operationId: forecast-weather
+      - "APIs"
+      summary: "Forecast API"
+      description: "Forecast weather API method returns, depending upon your price\
+        \ plan level, upto next 14 day weather forecast and weather alert as json\
+        \ or xml. The data is returned as a Forecast Object.<br /><br />Forecast object\
+        \ contains astronomy data, day weather forecast and hourly interval weather\
+        \ information for a given city."
+      operationId: "forecast-weather"
       parameters:
-      - name: q
-        in: query
+      - name: "q"
+        in: "query"
         description: "Pass US Zipcode, UK Postcode, Canada Postalcode, IP address,\
           \ Latitude/Longitude (decimal degree) or city name. Visit [request parameter\
           \ section](https://www.weatherapi.com/docs/#intro-request) to learn more."
         required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-      - name: days
-        in: query
-        description: Number of days of weather forecast. Value ranges from 1 to 14
+        type: "string"
+        x-exportParamName: "Q"
+      - name: "days"
+        in: "query"
+        description: "Number of days of weather forecast. Value ranges from 1 to 14"
         required: true
-        style: form
-        explode: true
-        schema:
-          type: integer
-          enum:
-          - 1
-          - 2
-          - 3
-          - 4
-          - 5
-          - 6
-          - 7
-          - 8
-          - 9
-          - 10
-          - 11
-          - 12
-          - 13
-          - 14
-      - name: dt
-        in: query
-        description: Date should be between today and next 14 day in yyyy-MM-dd format.
-          e.g. '2015-01-01'
+        type: "integer"
+        enum:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        - 8
+        - 9
+        - 10
+        - 11
+        - 12
+        - 13
+        - 14
+        x-exportParamName: "Days"
+      - name: "dt"
+        in: "query"
+        description: "Date should be between today and next 14 day in yyyy-MM-dd format.\
+          \ e.g. '2015-01-01'"
         required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-          format: date
-      - name: unixdt
-        in: query
-        description: Please either pass 'dt' or 'unixdt' and not both in same request.
-          unixdt should be between today and next 14 day in Unix format. e.g. 1490227200
+        type: "string"
+        format: "date"
+        x-exportParamName: "Dt"
+        x-optionalDataType: "String"
+      - name: "unixdt"
+        in: "query"
+        description: "Please either pass 'dt' or 'unixdt' and not both in same request.\
+          \ unixdt should be between today and next 14 day in Unix format. e.g. 1490227200"
         required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
-      - name: hour
-        in: query
+        type: "integer"
+        x-exportParamName: "Unixdt"
+        x-optionalDataType: "Int32"
+      - name: "hour"
+        in: "query"
         description: "Must be in 24 hour. For example 5 pm should be hour=17, 6 am\
           \ as hour=6"
         required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
-      - name: lang
-        in: query
+        type: "integer"
+        x-exportParamName: "Hour"
+        x-optionalDataType: "Int32"
+      - name: "lang"
+        in: "query"
         description: "Returns 'condition:text' field in API in the desired language.<br\
           \ /> Visit [request parameter section](https://www.weatherapi.com/docs/#intro-request)\
           \ to check 'lang-code'."
         required: false
-        style: form
-        explode: true
-        schema:
-          type: string
+        type: "string"
+        x-exportParamName: "Lang"
+        x-optionalDataType: "String"
+      - name: "alerts"
+        in: "query"
+        description: "Enable/Disable alerts in forecast API output. Example, alerts=yes\
+          \ or alerts=no."
+        required: false
+        type: "string"
+        x-exportParamName: "Alerts"
+        x-optionalDataType: "String"
+      - name: "aqi"
+        in: "query"
+        description: "Enable/Disable Air Quality data in forecast API output. Example,\
+          \ aqi=yes or aqi=no."
+        required: false
+        type: "string"
+        x-exportParamName: "Aqi"
+        x-optionalDataType: "String"
+      - name: "tp"
+        in: "query"
+        description: "Get 15 min interval or 24 hour average data for Forecast and\
+          \ History API. Available for Enterprise clients only. E.g:- tp=15"
+        required: false
+        type: "integer"
+        x-exportParamName: "Tp"
+        x-optionalDataType: "Int32"
+      security:
+      - ApiKeyAuth: []
       responses:
         "200":
-          description: Ok
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_200_1'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/inline_response_200_1'
+          description: "Ok"
+          schema:
+            properties:
+              location:
+                $ref: "#/definitions/location"
+              current:
+                $ref: "#/definitions/current"
+              forecast:
+                $ref: "#/definitions/forecast"
+              alerts:
+                $ref: "#/definitions/alerts"
         "400":
           description: "Error code 1003: Parameter 'q' not provided.<br />Error code\
             \ 1005: API request url is invalid.<br />Error code 1006: No location\
-            \ found matching parameter 'q'<br />Error code 9999: Internal application\
-            \ error."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error400'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/error400'
+            \ found matching parameter 'q'<br />Error code 9000: Json body passed\
+            \ in bulk request is invalid. Please make sure it is valid json with utf-8\
+            \ encoding.<br />Error code 9001: Json body contains too many locations\
+            \ for bulk request. Please keep it below 50 in a single request.<br />Error\
+            \ code 9999: Internal application error."
+          schema:
+            $ref: "#/definitions/error400"
         "401":
           description: "Error code 1002: API key not provided.<br />Error code 2006:\
             \ API key provided is invalid"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error401'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/error401'
+          schema:
+            $ref: "#/definitions/error401"
         "403":
           description: "Error code 2007: API key has exceeded calls per month quota.<br\
-            \ />Error code 2008: API key has been disabled."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error403'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/error403'
-      security:
-      - ApiKeyAuth: []
+            \ />Error code 2008: API key has been disabled.<br />Error code 2009:\
+            \ API key does not have access to the resource. Please check pricing page\
+            \ for what is allowed in your API subscription plan."
+          schema:
+            $ref: "#/definitions/error403"
   /future.json:
     get:
       tags:
-      - APIs
-      summary: Future API
-      description: Future weather API method returns weather in a 3 hourly interval
-        in future for a date between 14 days and 300 days from today in the future.
-      operationId: future-weather
+      - "APIs"
+      summary: "Future API"
+      description: "Future weather API method returns weather in a 3 hourly interval\
+        \ in future for a date between 14 days and 365 days from today in the future."
+      operationId: "future-weather"
       parameters:
-      - name: q
-        in: query
+      - name: "q"
+        in: "query"
         description: "Pass US Zipcode, UK Postcode, Canada Postalcode, IP address,\
           \ Latitude/Longitude (decimal degree) or city name. Visit [request parameter\
           \ section](https://www.weatherapi.com/docs/#intro-request) to learn more."
         required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-      - name: dt
-        in: query
-        description: Date should be between 14 days and 300 days from today in the
-          future in yyyy-MM-dd format (i.e. dt=2023-01-01)
+        type: "string"
+        x-exportParamName: "Q"
+      - name: "dt"
+        in: "query"
+        description: "Date should be between 14 days and 300 days from today in the\
+          \ future in yyyy-MM-dd format (i.e. dt=2023-01-01)"
         required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-          format: date
-      - name: lang
-        in: query
+        type: "string"
+        format: "date"
+        x-exportParamName: "Dt"
+        x-optionalDataType: "String"
+      - name: "lang"
+        in: "query"
         description: "Returns 'condition:text' field in API in the desired language.<br\
           \ /> Visit [request parameter section](https://www.weatherapi.com/docs/#intro-request)\
           \ to check 'lang-code'."
         required: false
-        style: form
-        explode: true
-        schema:
-          type: string
+        type: "string"
+        x-exportParamName: "Lang"
+        x-optionalDataType: "String"
+      security:
+      - ApiKeyAuth: []
       responses:
         "200":
-          description: Ok
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_200_2'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/inline_response_200_2'
+          description: "Ok"
+          schema:
+            properties:
+              location:
+                $ref: "#/definitions/location"
+              forecast:
+                $ref: "#/definitions/forecast"
         "400":
           description: "Error code 1003: Parameter 'q' not provided.<br />Error code\
             \ 1005: API request url is invalid.<br />Error code 1006: No location\
-            \ found matching parameter 'q'<br />Error code 9999: Internal application\
-            \ error."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error400'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/error400'
+            \ found matching parameter 'q'<br />Error code 9000: Json body passed\
+            \ in bulk request is invalid. Please make sure it is valid json with utf-8\
+            \ encoding.<br />Error code 9001: Json body contains too many locations\
+            \ for bulk request. Please keep it below 50 in a single request.<br />Error\
+            \ code 9999: Internal application error."
+          schema:
+            $ref: "#/definitions/error400"
         "401":
           description: "Error code 1002: API key not provided.<br />Error code 2006:\
             \ API key provided is invalid"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error401'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/error401'
+          schema:
+            $ref: "#/definitions/error401"
         "403":
           description: "Error code 2007: API key has exceeded calls per month quota.<br\
-            \ />Error code 2008: API key has been disabled."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error403'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/error403'
-      security:
-      - ApiKeyAuth: []
+            \ />Error code 2008: API key has been disabled.<br />Error code 2009:\
+            \ API key does not have access to the resource. Please check pricing page\
+            \ for what is allowed in your API subscription plan."
+          schema:
+            $ref: "#/definitions/error403"
   /history.json:
     get:
       tags:
-      - APIs
-      summary: History API
+      - "APIs"
+      summary: "History API"
       description: "History weather API method returns historical weather for a date\
         \ on or after 1st Jan, 2010 as json. The data is returned as a Forecast Object."
-      operationId: history-weather
+      operationId: "history-weather"
       parameters:
-      - name: q
-        in: query
+      - name: "q"
+        in: "query"
         description: "Pass US Zipcode, UK Postcode, Canada Postalcode, IP address,\
           \ Latitude/Longitude (decimal degree) or city name. Visit [request parameter\
           \ section](https://www.weatherapi.com/docs/#intro-request) to learn more."
         required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-      - name: dt
-        in: query
+        type: "string"
+        x-exportParamName: "Q"
+      - name: "dt"
+        in: "query"
         description: "Date on or after 1st Jan, 2015 in yyyy-MM-dd format"
         required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-          format: date
-      - name: unixdt
-        in: query
+        type: "string"
+        format: "date"
+        x-exportParamName: "Dt"
+      - name: "unixdt"
+        in: "query"
         description: "Please either pass 'dt' or 'unixdt' and not both in same request.<br\
           \ />unixdt should be on or after 1st Jan, 2015 in Unix format"
         required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
-      - name: end_dt
-        in: query
+        type: "integer"
+        x-exportParamName: "Unixdt"
+        x-optionalDataType: "Int32"
+      - name: "end_dt"
+        in: "query"
         description: "Date on or after 1st Jan, 2015 in yyyy-MM-dd format<br />'end_dt'\
           \ should be greater than 'dt' parameter and difference should not be more\
           \ than 30 days between the two dates."
         required: false
-        style: form
-        explode: true
-        schema:
-          type: string
-          format: date
-      - name: unixend_dt
-        in: query
+        type: "string"
+        format: "date"
+        x-exportParamName: "EndDt"
+        x-optionalDataType: "String"
+      - name: "unixend_dt"
+        in: "query"
         description: "Date on or after 1st Jan, 2015 in Unix Timestamp format<br />unixend_dt\
           \ has same restriction as 'end_dt' parameter. Please either pass 'end_dt'\
           \ or 'unixend_dt' and not both in same request. e.g. unixend_dt=1490227200"
         required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
-      - name: hour
-        in: query
+        type: "integer"
+        x-exportParamName: "UnixendDt"
+        x-optionalDataType: "Int32"
+      - name: "hour"
+        in: "query"
         description: "Must be in 24 hour. For example 5 pm should be hour=17, 6 am\
           \ as hour=6"
         required: false
-        style: form
-        explode: true
-        schema:
-          type: integer
-      - name: lang
-        in: query
+        type: "integer"
+        x-exportParamName: "Hour"
+        x-optionalDataType: "Int32"
+      - name: "lang"
+        in: "query"
         description: "Returns 'condition:text' field in API in the desired language.<br\
           \ /> Visit [request parameter section](https://www.weatherapi.com/docs/#intro-request)\
           \ to check 'lang-code'."
         required: false
-        style: form
-        explode: true
-        schema:
-          type: string
+        type: "string"
+        x-exportParamName: "Lang"
+        x-optionalDataType: "String"
+      security:
+      - ApiKeyAuth: []
       responses:
         "200":
-          description: Ok
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_200_2'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/inline_response_200_2'
+          description: "Ok"
+          schema:
+            properties:
+              location:
+                $ref: "#/definitions/location"
+              forecast:
+                $ref: "#/definitions/forecast"
         "400":
           description: "Error code 1003: Parameter 'q' not provided.<br />Error code\
             \ 1005: API request url is invalid.<br />Error code 1006: No location\
-            \ found matching parameter 'q'<br />Error code 9999: Internal application\
-            \ error."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error400'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/error400'
+            \ found matching parameter 'q'<br />Error code 9000: Json body passed\
+            \ in bulk request is invalid. Please make sure it is valid json with utf-8\
+            \ encoding.<br />Error code 9001: Json body contains too many locations\
+            \ for bulk request. Please keep it below 50 in a single request.<br />Error\
+            \ code 9999: Internal application error."
+          schema:
+            $ref: "#/definitions/error400"
         "401":
           description: "Error code 1002: API key not provided.<br />Error code 2006:\
             \ API key provided is invalid"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error401'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/error401'
+          schema:
+            $ref: "#/definitions/error401"
         "403":
           description: "Error code 2007: API key has exceeded calls per month quota.<br\
-            \ />Error code 2008: API key has been disabled."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error403'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/error403'
+            \ />Error code 2008: API key has been disabled.<br />Error code 2009:\
+            \ API key does not have access to the resource. Please check pricing page\
+            \ for what is allowed in your API subscription plan."
+          schema:
+            $ref: "#/definitions/error403"
+  /marine.json:
+    get:
+      tags:
+      - "APIs"
+      summary: "Marine Weather API"
+      description: "Marine weather API method returns upto next 7 day (depending upon\
+        \ your price plan level) marine and sailing weather forecast and tide data\
+        \ (depending upon your price plan level) as json or xml. The data is returned\
+        \ as a Marine Object.<br /><br />Marine object, depending upon your price\
+        \ plan level, contains astronomy data, day weather forecast and hourly interval\
+        \ weather information and tide data for a given sea/ocean point."
+      operationId: "marine-weather"
+      parameters:
+      - name: "q"
+        in: "query"
+        description: "Pass Latitude/Longitude (decimal degree) which is on a sea/ocean.\
+          \ Visit [request parameter section](https://www.weatherapi.com/docs/#intro-request)\
+          \ to learn more."
+        required: true
+        type: "string"
+        x-exportParamName: "Q"
+      - name: "days"
+        in: "query"
+        description: "Number of days of weather forecast. Value ranges from 1 to 7"
+        required: true
+        type: "integer"
+        enum:
+        - 1
+        - 2
+        - 3
+        - 4
+        - 5
+        - 6
+        - 7
+        x-exportParamName: "Days"
+      - name: "dt"
+        in: "query"
+        description: "Date should be between today and next 7 day in yyyy-MM-dd format.\
+          \ e.g. '2023-05-20'"
+        required: false
+        type: "string"
+        format: "date"
+        x-exportParamName: "Dt"
+        x-optionalDataType: "String"
+      - name: "unixdt"
+        in: "query"
+        description: "Please either pass 'dt' or 'unixdt' and not both in same request.\
+          \ unixdt should be between today and next 7 day in Unix format. e.g. 1490227200"
+        required: false
+        type: "integer"
+        x-exportParamName: "Unixdt"
+        x-optionalDataType: "Int32"
+      - name: "hour"
+        in: "query"
+        description: "Must be in 24 hour. For example 5 pm should be hour=17, 6 am\
+          \ as hour=6"
+        required: false
+        type: "integer"
+        x-exportParamName: "Hour"
+        x-optionalDataType: "Int32"
+      - name: "lang"
+        in: "query"
+        description: "Returns 'condition:text' field in API in the desired language.<br\
+          \ /> Visit [request parameter section](https://www.weatherapi.com/docs/#intro-request)\
+          \ to check 'lang-code'."
+        required: false
+        type: "string"
+        x-exportParamName: "Lang"
+        x-optionalDataType: "String"
       security:
       - ApiKeyAuth: []
+      responses:
+        "200":
+          description: "Ok"
+          schema:
+            properties:
+              location:
+                $ref: "#/definitions/location"
+              forecast:
+                $ref: "#/definitions/marine"
+        "400":
+          description: "Error code 1003: Parameter 'q' not provided.<br />Error code\
+            \ 1005: API request url is invalid.<br />Error code 1006: No location\
+            \ found matching parameter 'q'<br />Error code 9000: Json body passed\
+            \ in bulk request is invalid. Please make sure it is valid json with utf-8\
+            \ encoding.<br />Error code 9001: Json body contains too many locations\
+            \ for bulk request. Please keep it below 50 in a single request.<br />Error\
+            \ code 9999: Internal application error."
+          schema:
+            $ref: "#/definitions/error400"
+        "401":
+          description: "Error code 1002: API key not provided.<br />Error code 2006:\
+            \ API key provided is invalid"
+          schema:
+            $ref: "#/definitions/error401"
+        "403":
+          description: "Error code 2007: API key has exceeded calls per month quota.<br\
+            \ />Error code 2008: API key has been disabled.<br />Error code 2009:\
+            \ API key does not have access to the resource. Please check pricing page\
+            \ for what is allowed in your API subscription plan."
+          schema:
+            $ref: "#/definitions/error403"
   /search.json:
     get:
       tags:
-      - APIs
-      summary: Search/Autocomplete API
-      description: WeatherAPI.com Search or Autocomplete API returns matching cities
-        and towns as an array of Location object.
-      operationId: search-autocomplete-weather
+      - "APIs"
+      summary: "Search/Autocomplete API"
+      description: "WeatherAPI.com Search or Autocomplete API returns matching cities\
+        \ and towns as an array of Location object."
+      operationId: "search-autocomplete-weather"
       parameters:
-      - name: q
-        in: query
+      - name: "q"
+        in: "query"
         description: "Pass US Zipcode, UK Postcode, Canada Postalcode, IP address,\
           \ Latitude/Longitude (decimal degree) or city name. Visit [request parameter\
           \ section](https://www.weatherapi.com/docs/#intro-request) to learn more."
         required: true
-        style: form
-        explode: true
-        schema:
-          type: string
+        type: "string"
+        x-exportParamName: "Q"
+      security:
+      - ApiKeyAuth: []
       responses:
         "200":
-          description: Ok
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ArrayOfSearch'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/ArrayOfSearch'
+          description: "Ok"
+          schema:
+            $ref: "#/definitions/ArrayOfSearch"
         "400":
           description: "Error code 1003: Parameter 'q' not provided.<br />Error code\
             \ 1005: API request url is invalid.<br />Error code 1006: No location\
-            \ found matching parameter 'q'<br />Error code 9999: Internal application\
-            \ error."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error400'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/error400'
+            \ found matching parameter 'q'<br />Error code 9000: Json body passed\
+            \ in bulk request is invalid. Please make sure it is valid json with utf-8\
+            \ encoding.<br />Error code 9001: Json body contains too many locations\
+            \ for bulk request. Please keep it below 50 in a single request.<br />Error\
+            \ code 9999: Internal application error."
+          schema:
+            $ref: "#/definitions/error400"
         "401":
           description: "Error code 1002: API key not provided.<br />Error code 2006:\
             \ API key provided is invalid"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error401'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/error401'
+          schema:
+            $ref: "#/definitions/error401"
         "403":
           description: "Error code 2007: API key has exceeded calls per month quota.<br\
-            \ />Error code 2008: API key has been disabled."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error403'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/error403'
-      security:
-      - ApiKeyAuth: []
+            \ />Error code 2008: API key has been disabled.<br />Error code 2009:\
+            \ API key does not have access to the resource. Please check pricing page\
+            \ for what is allowed in your API subscription plan."
+          schema:
+            $ref: "#/definitions/error403"
   /ip.json:
     get:
       tags:
-      - APIs
-      summary: IP Lookup API
-      description: IP Lookup API method allows a user to get up to date information
-        for an IP address.
-      operationId: ip-lookup
+      - "APIs"
+      summary: "IP Lookup API"
+      description: "IP Lookup API method allows a user to get up to date information\
+        \ for an IP address."
+      operationId: "ip-lookup"
       parameters:
-      - name: q
-        in: query
-        description: Pass IP address.
+      - name: "q"
+        in: "query"
+        description: "Pass IP address."
         required: true
-        style: form
-        explode: true
-        schema:
-          type: string
+        type: "string"
+        x-exportParamName: "Q"
+      security:
+      - ApiKeyAuth: []
       responses:
         "200":
-          description: Ok
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ip'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/ip'
+          description: "Ok"
+          schema:
+            $ref: "#/definitions/ip"
         "400":
           description: "Error code 1003: Parameter 'q' not provided.<br />Error code\
             \ 1005: API request url is invalid.<br />Error code 1006: No location\
-            \ found matching parameter 'q'<br />Error code 9999: Internal application\
-            \ error."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error400'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/error400'
+            \ found matching parameter 'q'<br />Error code 9000: Json body passed\
+            \ in bulk request is invalid. Please make sure it is valid json with utf-8\
+            \ encoding.<br />Error code 9001: Json body contains too many locations\
+            \ for bulk request. Please keep it below 50 in a single request.<br />Error\
+            \ code 9999: Internal application error."
+          schema:
+            $ref: "#/definitions/error400"
         "401":
           description: "Error code 1002: API key not provided.<br />Error code 2006:\
             \ API key provided is invalid"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error401'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/error401'
+          schema:
+            $ref: "#/definitions/error401"
         "403":
           description: "Error code 2007: API key has exceeded calls per month quota.<br\
-            \ />Error code 2008: API key has been disabled."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error403'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/error403'
-      security:
-      - ApiKeyAuth: []
+            \ />Error code 2008: API key has been disabled.<br />Error code 2009:\
+            \ API key does not have access to the resource. Please check pricing page\
+            \ for what is allowed in your API subscription plan."
+          schema:
+            $ref: "#/definitions/error403"
   /timezone.json:
     get:
       tags:
-      - APIs
-      summary: Time Zone API
-      description: Return Location Object
-      operationId: time-zone
+      - "APIs"
+      summary: "Time Zone API"
+      description: "Return Location Object"
+      operationId: "time-zone"
       parameters:
-      - name: q
-        in: query
+      - name: "q"
+        in: "query"
         description: "Pass US Zipcode, UK Postcode, Canada Postalcode, IP address,\
           \ Latitude/Longitude (decimal degree) or city name. Visit [request parameter\
           \ section](https://www.weatherapi.com/docs/#intro-request) to learn more."
         required: true
-        style: form
-        explode: true
-        schema:
-          type: string
+        type: "string"
+        x-exportParamName: "Q"
+      security:
+      - ApiKeyAuth: []
       responses:
         "200":
-          description: Ok
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/location'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/location'
+          description: "Ok"
+          schema:
+            $ref: "#/definitions/location"
         "400":
           description: "Error code 1003: Parameter 'q' not provided.<br />Error code\
             \ 1005: API request url is invalid.<br />Error code 1006: No location\
-            \ found matching parameter 'q'<br />Error code 9999: Internal application\
-            \ error."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error400'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/error400'
+            \ found matching parameter 'q'<br />Error code 9000: Json body passed\
+            \ in bulk request is invalid. Please make sure it is valid json with utf-8\
+            \ encoding.<br />Error code 9001: Json body contains too many locations\
+            \ for bulk request. Please keep it below 50 in a single request.<br />Error\
+            \ code 9999: Internal application error."
+          schema:
+            $ref: "#/definitions/error400"
         "401":
           description: "Error code 1002: API key not provided.<br />Error code 2006:\
             \ API key provided is invalid"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error401'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/error401'
+          schema:
+            $ref: "#/definitions/error401"
         "403":
           description: "Error code 2007: API key has exceeded calls per month quota.<br\
-            \ />Error code 2008: API key has been disabled."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error403'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/error403'
-      security:
-      - ApiKeyAuth: []
+            \ />Error code 2008: API key has been disabled.<br />Error code 2009:\
+            \ API key does not have access to the resource. Please check pricing page\
+            \ for what is allowed in your API subscription plan."
+          schema:
+            $ref: "#/definitions/error403"
   /astronomy.json:
     get:
       tags:
-      - APIs
-      summary: Astronomy API
-      description: Return Location and Astronomy Object
-      operationId: astronomy
+      - "APIs"
+      summary: "Astronomy API"
+      description: "Return Location and Astronomy Object"
+      operationId: "astronomy"
       parameters:
-      - name: q
-        in: query
+      - name: "q"
+        in: "query"
         description: "Pass US Zipcode, UK Postcode, Canada Postalcode, IP address,\
           \ Latitude/Longitude (decimal degree) or city name. Visit [request parameter\
           \ section](https://www.weatherapi.com/docs/#intro-request) to learn more."
         required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-      - name: dt
-        in: query
+        type: "string"
+        x-exportParamName: "Q"
+      - name: "dt"
+        in: "query"
         description: "Date on or after 1st Jan, 2015 in yyyy-MM-dd format"
         required: true
-        style: form
-        explode: true
-        schema:
-          type: string
-          format: date
+        type: "string"
+        format: "date"
+        x-exportParamName: "Dt"
+      security:
+      - ApiKeyAuth: []
       responses:
         "200":
-          description: Ok
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/inline_response_200_3'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/inline_response_200_3'
+          description: "Ok"
+          schema:
+            properties:
+              location:
+                $ref: "#/definitions/location"
+              astronomy:
+                $ref: "#/definitions/astronomy"
         "400":
           description: "Error code 1003: Parameter 'q' not provided.<br />Error code\
             \ 1005: API request url is invalid.<br />Error code 1006: No location\
-            \ found matching parameter 'q'<br />Error code 9999: Internal application\
-            \ error."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error400'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/error400'
+            \ found matching parameter 'q'<br />Error code 9000: Json body passed\
+            \ in bulk request is invalid. Please make sure it is valid json with utf-8\
+            \ encoding.<br />Error code 9001: Json body contains too many locations\
+            \ for bulk request. Please keep it below 50 in a single request.<br />Error\
+            \ code 9999: Internal application error."
+          schema:
+            $ref: "#/definitions/error400"
         "401":
           description: "Error code 1002: API key not provided.<br />Error code 2006:\
             \ API key provided is invalid"
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error401'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/error401'
+          schema:
+            $ref: "#/definitions/error401"
         "403":
           description: "Error code 2007: API key has exceeded calls per month quota.<br\
-            \ />Error code 2008: API key has been disabled."
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/error403'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/error403'
-      security:
-      - ApiKeyAuth: []
-components:
-  schemas:
-    search:
-      type: object
-      properties:
-        id:
-          type: integer
-          format: int32
-          example: 2796590
-        name:
-          type: string
-          example: Holborn
-        region:
-          type: string
-          example: Camden Greater London
-        country:
-          type: string
-          example: United Kingdom
-        lat:
-          type: number
-          example: 51.52
-        lon:
-          type: number
-          example: -0.12
-        url:
-          type: string
-          example: holborn-camden-greater-london-united-kingdom
-      example:
-        country: United Kingdom
-        name: Holborn
-        lon: -0.12
-        id: 2796590
-        region: Camden Greater London
-        lat: 51.52
-        url: holborn-camden-greater-london-united-kingdom
-    ArrayOfSearch:
-      type: array
-      items:
-        $ref: '#/components/schemas/search'
-      x-schema-name: ArrayOfSearch
-    location:
-      type: object
-      properties:
-        name:
-          type: string
-          example: New York
-        region:
-          type: string
-          example: New York
-        country:
-          type: string
-          example: United States of America
-        lat:
-          type: number
-          example: 40.71
-        lon:
-          type: number
-          example: -74.01
-        tz_id:
-          type: string
-          example: America/New_York
-        localtime_epoch:
-          type: integer
-          format: int32
-          example: 1658522976
-        localtime:
-          type: string
-          example: 2022-07-22 16:49
-      example:
-        localtime: 2022-07-22 16:49
-        country: United States of America
-        localtime_epoch: 1658522976
-        name: New York
-        lon: -74.01
-        region: New York
-        lat: 40.71
-        tz_id: America/New_York
-    current:
-      type: object
-      properties:
-        last_updated_epoch:
-          type: integer
-          format: int32
-          example: 1658522700
-        last_updated:
-          type: string
-          example: 2022-07-22 16:45
-        temp_c:
-          type: number
-          example: 34.4
-        temp_f:
-          type: number
-          example: 93.9
-        is_day:
-          type: integer
-          format: int32
-          example: 1
-        condition:
-          $ref: '#/components/schemas/current_condition'
-        wind_mph:
-          type: number
-          example: 16.1
-        wind_kph:
-          type: number
-          example: 25.9
-        wind_degree:
-          type: integer
-          format: int32
-          example: 180
-        wind_dir:
-          type: string
-          example: S
-        pressure_mb:
-          type: integer
-          format: int32
-          example: 1011
-        pressure_in:
-          type: number
-          example: 29.85
-        precip_mm:
-          type: integer
-          format: int32
-          example: 0
-        precip_in:
-          type: integer
-          format: int32
-          example: 0
-        humidity:
-          type: integer
-          format: int32
-          example: 31
-        cloud:
-          type: integer
-          format: int32
-          example: 75
-        feelslike_c:
-          type: integer
-          format: int32
-          example: 37
-        feelslike_f:
-          type: number
-          example: 98.6
-        vis_km:
-          type: integer
-          format: int32
-          example: 16
-        vis_miles:
-          type: integer
-          format: int32
-          example: 9
-        uv:
-          type: integer
-          format: int32
-          example: 8
-        gust_mph:
-          type: number
-          example: 11.6
-        gust_kph:
-          type: number
-          example: 18.7
-        air_quality:
-          $ref: '#/components/schemas/current_air_quality'
-      example:
-        feelslike_c: 37
-        uv: 8
-        last_updated: 2022-07-22 16:45
-        feelslike_f: 98.6
-        wind_degree: 180
-        last_updated_epoch: 1658522700
-        is_day: 1
-        precip_in: 0
-        air_quality:
-          no2: 18.5
-          o3: 234.60000610351562
-          us-epa-index: 1
-          so2: 12
-          pm2_5: 13.600000381469727
-          pm10: 15
-          co: 293.70001220703125
-          gb-defra-index: 2
-        wind_dir: S
-        gust_mph: 11.6
-        temp_c: 34.4
-        pressure_in: 29.85
-        gust_kph: 18.7
-        temp_f: 93.9
-        precip_mm: 0
-        cloud: 75
-        wind_kph: 25.9
-        condition:
-          code: 1003
-          icon: //cdn.weatherapi.com/weather/64x64/day/116.png
-          text: Partly cloudy
-        wind_mph: 16.1
-        vis_km: 16
-        humidity: 31
-        pressure_mb: 1011
-        vis_miles: 9
-    forecast:
-      type: object
-      properties:
-        forecastday:
-          type: array
-          items:
-            $ref: '#/components/schemas/forecast_forecastday'
-      example:
-        forecastday:
-        - date: 2000-01-23
-          astro:
-            moonset: 03:35 PM
-            moon_illumination: "36"
-            sunrise: 05:44 AM
-            moon_phase: Last Quarter
-            sunset: 08:20 PM
-            moonrise: 12:58 AM
-          date_epoch: 1658448000
-          hour:
-          - feelslike_c: 30.5
-            feelslike_f: 86.9
-            wind_degree: 265
-            windchill_f: 83.7
-            windchill_c: 28.7
-            temp_c: 28.7
-            temp_f: 83.7
-            cloud: 19
-            wind_kph: 15.1
-            wind_mph: 9.4
-            humidity: 58
-            dewpoint_f: 67.3
-            will_it_rain: 0
-            uv: 1
-            heatindex_f: 86.9
-            dewpoint_c: 19.6
-            is_day: 0
-            precip_in: 0
-            heatindex_c: 30.5
-            wind_dir: W
-            gust_mph: 15
-            pressure_in: 29.73
-            chance_of_rain: 0
-            gust_kph: 24.1
-            precip_mm: 0
-            condition:
-              code: 1000
-              icon: //cdn.weatherapi.com/weather/64x64/night/113.png
-              text: Clear
-            will_it_snow: 0
-            vis_km: 10
-            time_epoch: 1658462400
-            time: 2022-07-22 00:00
-            chance_of_snow: 0
-            pressure_mb: 1007
-            vis_miles: 6
-          - feelslike_c: 30.5
-            feelslike_f: 86.9
-            wind_degree: 265
-            windchill_f: 83.7
-            windchill_c: 28.7
-            temp_c: 28.7
-            temp_f: 83.7
-            cloud: 19
-            wind_kph: 15.1
-            wind_mph: 9.4
-            humidity: 58
-            dewpoint_f: 67.3
-            will_it_rain: 0
-            uv: 1
-            heatindex_f: 86.9
-            dewpoint_c: 19.6
-            is_day: 0
-            precip_in: 0
-            heatindex_c: 30.5
-            wind_dir: W
-            gust_mph: 15
-            pressure_in: 29.73
-            chance_of_rain: 0
-            gust_kph: 24.1
-            precip_mm: 0
-            condition:
-              code: 1000
-              icon: //cdn.weatherapi.com/weather/64x64/night/113.png
-              text: Clear
-            will_it_snow: 0
-            vis_km: 10
-            time_epoch: 1658462400
-            time: 2022-07-22 00:00
-            chance_of_snow: 0
-            pressure_mb: 1007
-            vis_miles: 6
-          day:
-            avgvis_km: 10
-            uv: 8
-            avgtemp_f: 87.3
-            avgtemp_c: 30.7
-            daily_chance_of_snow: 0
-            maxtemp_c: 35.9
-            maxtemp_f: 96.6
-            mintemp_c: 26.3
-            avgvis_miles: 6
-            daily_will_it_rain: 0
-            mintemp_f: 79.3
-            totalprecip_in: 0
-            avghumidity: 53
-            condition:
-              code: 1000
-              icon: //cdn.weatherapi.com/weather/64x64/day/113.png
-              text: Sunny
-            maxwind_kph: 20.5
-            maxwind_mph: 12.8
-            daily_chance_of_rain: 0
-            totalprecip_mm: 0
-            daily_will_it_snow: 0
-        - date: 2000-01-23
-          astro:
-            moonset: 03:35 PM
-            moon_illumination: "36"
-            sunrise: 05:44 AM
-            moon_phase: Last Quarter
-            sunset: 08:20 PM
-            moonrise: 12:58 AM
-          date_epoch: 1658448000
-          hour:
-          - feelslike_c: 30.5
-            feelslike_f: 86.9
-            wind_degree: 265
-            windchill_f: 83.7
-            windchill_c: 28.7
-            temp_c: 28.7
-            temp_f: 83.7
-            cloud: 19
-            wind_kph: 15.1
-            wind_mph: 9.4
-            humidity: 58
-            dewpoint_f: 67.3
-            will_it_rain: 0
-            uv: 1
-            heatindex_f: 86.9
-            dewpoint_c: 19.6
-            is_day: 0
-            precip_in: 0
-            heatindex_c: 30.5
-            wind_dir: W
-            gust_mph: 15
-            pressure_in: 29.73
-            chance_of_rain: 0
-            gust_kph: 24.1
-            precip_mm: 0
-            condition:
-              code: 1000
-              icon: //cdn.weatherapi.com/weather/64x64/night/113.png
-              text: Clear
-            will_it_snow: 0
-            vis_km: 10
-            time_epoch: 1658462400
-            time: 2022-07-22 00:00
-            chance_of_snow: 0
-            pressure_mb: 1007
-            vis_miles: 6
-          - feelslike_c: 30.5
-            feelslike_f: 86.9
-            wind_degree: 265
-            windchill_f: 83.7
-            windchill_c: 28.7
-            temp_c: 28.7
-            temp_f: 83.7
-            cloud: 19
-            wind_kph: 15.1
-            wind_mph: 9.4
-            humidity: 58
-            dewpoint_f: 67.3
-            will_it_rain: 0
-            uv: 1
-            heatindex_f: 86.9
-            dewpoint_c: 19.6
-            is_day: 0
-            precip_in: 0
-            heatindex_c: 30.5
-            wind_dir: W
-            gust_mph: 15
-            pressure_in: 29.73
-            chance_of_rain: 0
-            gust_kph: 24.1
-            precip_mm: 0
-            condition:
-              code: 1000
-              icon: //cdn.weatherapi.com/weather/64x64/night/113.png
-              text: Clear
-            will_it_snow: 0
-            vis_km: 10
-            time_epoch: 1658462400
-            time: 2022-07-22 00:00
-            chance_of_snow: 0
-            pressure_mb: 1007
-            vis_miles: 6
-          day:
-            avgvis_km: 10
-            uv: 8
-            avgtemp_f: 87.3
-            avgtemp_c: 30.7
-            daily_chance_of_snow: 0
-            maxtemp_c: 35.9
-            maxtemp_f: 96.6
-            mintemp_c: 26.3
-            avgvis_miles: 6
-            daily_will_it_rain: 0
-            mintemp_f: 79.3
-            totalprecip_in: 0
-            avghumidity: 53
-            condition:
-              code: 1000
-              icon: //cdn.weatherapi.com/weather/64x64/day/113.png
-              text: Sunny
-            maxwind_kph: 20.5
-            maxwind_mph: 12.8
-            daily_chance_of_rain: 0
-            totalprecip_mm: 0
-            daily_will_it_snow: 0
-    alerts:
-      type: object
-      properties:
-        alert:
-          type: array
-          items:
-            $ref: '#/components/schemas/alerts_alert'
-      example:
-        alert:
-        - severity: severity
-          note: note
-          expires: 2022-07-25T00:00:00Z
-          certainty: certainty
-          areas: areas
-          effective: 2022-07-21T19:38:00Z
-          urgency: urgency
-          instruction: ""
-          category: Extreme temperature value
-          event: Heat Advisory
-          headline: NWS New York City - Upton (Long Island and New York City)
-          msgtype: msgtype
-          desc: '...HEAT ADVISORY REMAINS IN EFFECT UNTIL 8 PM EDT SUNDAY... * WHAT...Heat
-            index values up to 105. * WHERE...Eastern Passaic Hudson Western Bergen
-            Western Essex Eastern Bergen and Eastern Essex Counties. * WHEN...Until
-            8 PM EDT Sunday. * IMPACTS...High temperatures and high humidity may cause
-            heat illnesses to occur.'
-        - severity: severity
-          note: note
-          expires: 2022-07-25T00:00:00Z
-          certainty: certainty
-          areas: areas
-          effective: 2022-07-21T19:38:00Z
-          urgency: urgency
-          instruction: ""
-          category: Extreme temperature value
-          event: Heat Advisory
-          headline: NWS New York City - Upton (Long Island and New York City)
-          msgtype: msgtype
-          desc: '...HEAT ADVISORY REMAINS IN EFFECT UNTIL 8 PM EDT SUNDAY... * WHAT...Heat
-            index values up to 105. * WHERE...Eastern Passaic Hudson Western Bergen
-            Western Essex Eastern Bergen and Eastern Essex Counties. * WHEN...Until
-            8 PM EDT Sunday. * IMPACTS...High temperatures and high humidity may cause
-            heat illnesses to occur.'
-    ip:
-      type: object
-      properties:
-        ip:
-          type: string
-          example: 185.249.71.82
-        type:
-          type: string
-          example: ipv4
-        continent_code:
-          type: string
-          example: EU
-        continent_name:
-          type: string
-          example: Europe
-        country_code:
-          type: string
-          example: GB
-        country_name:
-          type: string
-          example: United Kingdom
-        is_eu:
-          type: string
-          example: "false"
-        geoname_id:
-          type: integer
-          format: int32
-          example: 2643743
-        city:
-          type: string
-          example: London
-        region:
-          type: string
-        lat:
-          type: number
-          example: 51.5264
-        lon:
-          type: number
-          example: -0.0841
-        tz_id:
-          type: string
-          example: Europe/London
-        localtime_epoch:
-          type: integer
-          format: int32
-          example: 1658520645
-        localtime:
-          type: string
-          example: 2022-07-22 21:10
-      example:
-        continent_name: Europe
-        localtime: 2022-07-22 21:10
-        localtime_epoch: 1658520645
-        city: London
-        ip: 185.249.71.82
-        continent_code: EU
-        lon: -0.0841
-        type: ipv4
-        geoname_id: 2643743
-        tz_id: Europe/London
-        country_code: GB
-        country_name: United Kingdom
-        is_eu: "false"
-        region: region
-        lat: 51.5264
-    astronomy:
-      type: object
-      properties:
-        astro:
-          $ref: '#/components/schemas/astronomy_astro'
-      example:
-        astro:
-          moonset: 04:01 PM
-          moon_illumination: "42"
-          sunrise: 05:10 AM
-          moon_phase: Third Quarter
-          sunset: 09:03 PM
-          moonrise: 12:29 AM
-    error400:
-      type: object
-      properties:
-        code:
-          type: integer
-          format: int32
-          example: 1003
-        message:
-          type: string
-          example: Parameter 'q' not provided.
-    error401:
-      type: object
-      properties:
-        code:
-          type: integer
-          format: int32
-          example: 1002
-        message:
-          type: string
-          example: API key not provided
-    error403:
-      type: object
-      properties:
-        code:
-          type: integer
-          format: int32
-          example: 2007
-        message:
-          type: string
-          example: API key has exceeded calls per month quota.
-    inline_response_200:
-      properties:
-        location:
-          $ref: '#/components/schemas/location'
-        current:
-          $ref: '#/components/schemas/current'
-      example:
-        current:
-          feelslike_c: 37
-          uv: 8
-          last_updated: 2022-07-22 16:45
-          feelslike_f: 98.6
-          wind_degree: 180
-          last_updated_epoch: 1658522700
-          is_day: 1
-          precip_in: 0
-          air_quality:
-            no2: 18.5
-            o3: 234.60000610351562
-            us-epa-index: 1
-            so2: 12
-            pm2_5: 13.600000381469727
-            pm10: 15
-            co: 293.70001220703125
-            gb-defra-index: 2
-          wind_dir: S
-          gust_mph: 11.6
-          temp_c: 34.4
-          pressure_in: 29.85
-          gust_kph: 18.7
-          temp_f: 93.9
-          precip_mm: 0
-          cloud: 75
-          wind_kph: 25.9
-          condition:
-            code: 1003
-            icon: //cdn.weatherapi.com/weather/64x64/day/116.png
-            text: Partly cloudy
-          wind_mph: 16.1
-          vis_km: 16
-          humidity: 31
-          pressure_mb: 1011
-          vis_miles: 9
-        location:
-          localtime: 2022-07-22 16:49
-          country: United States of America
-          localtime_epoch: 1658522976
-          name: New York
-          lon: -74.01
-          region: New York
-          lat: 40.71
-          tz_id: America/New_York
-    inline_response_200_1:
-      properties:
-        location:
-          $ref: '#/components/schemas/location'
-        current:
-          $ref: '#/components/schemas/current'
-        forecast:
-          $ref: '#/components/schemas/forecast'
-        alerts:
-          $ref: '#/components/schemas/alerts'
-      example:
-        alerts:
-          alert:
-          - severity: severity
-            note: note
-            expires: 2022-07-25T00:00:00Z
-            certainty: certainty
-            areas: areas
-            effective: 2022-07-21T19:38:00Z
-            urgency: urgency
-            instruction: ""
-            category: Extreme temperature value
-            event: Heat Advisory
-            headline: NWS New York City - Upton (Long Island and New York City)
-            msgtype: msgtype
-            desc: '...HEAT ADVISORY REMAINS IN EFFECT UNTIL 8 PM EDT SUNDAY... * WHAT...Heat
-              index values up to 105. * WHERE...Eastern Passaic Hudson Western Bergen
-              Western Essex Eastern Bergen and Eastern Essex Counties. * WHEN...Until
-              8 PM EDT Sunday. * IMPACTS...High temperatures and high humidity may
-              cause heat illnesses to occur.'
-          - severity: severity
-            note: note
-            expires: 2022-07-25T00:00:00Z
-            certainty: certainty
-            areas: areas
-            effective: 2022-07-21T19:38:00Z
-            urgency: urgency
-            instruction: ""
-            category: Extreme temperature value
-            event: Heat Advisory
-            headline: NWS New York City - Upton (Long Island and New York City)
-            msgtype: msgtype
-            desc: '...HEAT ADVISORY REMAINS IN EFFECT UNTIL 8 PM EDT SUNDAY... * WHAT...Heat
-              index values up to 105. * WHERE...Eastern Passaic Hudson Western Bergen
-              Western Essex Eastern Bergen and Eastern Essex Counties. * WHEN...Until
-              8 PM EDT Sunday. * IMPACTS...High temperatures and high humidity may
-              cause heat illnesses to occur.'
-        current:
-          feelslike_c: 37
-          uv: 8
-          last_updated: 2022-07-22 16:45
-          feelslike_f: 98.6
-          wind_degree: 180
-          last_updated_epoch: 1658522700
-          is_day: 1
-          precip_in: 0
-          air_quality:
-            no2: 18.5
-            o3: 234.60000610351562
-            us-epa-index: 1
-            so2: 12
-            pm2_5: 13.600000381469727
-            pm10: 15
-            co: 293.70001220703125
-            gb-defra-index: 2
-          wind_dir: S
-          gust_mph: 11.6
-          temp_c: 34.4
-          pressure_in: 29.85
-          gust_kph: 18.7
-          temp_f: 93.9
-          precip_mm: 0
-          cloud: 75
-          wind_kph: 25.9
-          condition:
-            code: 1003
-            icon: //cdn.weatherapi.com/weather/64x64/day/116.png
-            text: Partly cloudy
-          wind_mph: 16.1
-          vis_km: 16
-          humidity: 31
-          pressure_mb: 1011
-          vis_miles: 9
-        location:
-          localtime: 2022-07-22 16:49
-          country: United States of America
-          localtime_epoch: 1658522976
-          name: New York
-          lon: -74.01
-          region: New York
-          lat: 40.71
-          tz_id: America/New_York
-        forecast:
-          forecastday:
-          - date: 2000-01-23
-            astro:
-              moonset: 03:35 PM
-              moon_illumination: "36"
-              sunrise: 05:44 AM
-              moon_phase: Last Quarter
-              sunset: 08:20 PM
-              moonrise: 12:58 AM
-            date_epoch: 1658448000
-            hour:
-            - feelslike_c: 30.5
-              feelslike_f: 86.9
-              wind_degree: 265
-              windchill_f: 83.7
-              windchill_c: 28.7
-              temp_c: 28.7
-              temp_f: 83.7
-              cloud: 19
-              wind_kph: 15.1
-              wind_mph: 9.4
-              humidity: 58
-              dewpoint_f: 67.3
-              will_it_rain: 0
-              uv: 1
-              heatindex_f: 86.9
-              dewpoint_c: 19.6
-              is_day: 0
-              precip_in: 0
-              heatindex_c: 30.5
-              wind_dir: W
-              gust_mph: 15
-              pressure_in: 29.73
-              chance_of_rain: 0
-              gust_kph: 24.1
-              precip_mm: 0
-              condition:
-                code: 1000
-                icon: //cdn.weatherapi.com/weather/64x64/night/113.png
-                text: Clear
-              will_it_snow: 0
-              vis_km: 10
-              time_epoch: 1658462400
-              time: 2022-07-22 00:00
-              chance_of_snow: 0
-              pressure_mb: 1007
-              vis_miles: 6
-            - feelslike_c: 30.5
-              feelslike_f: 86.9
-              wind_degree: 265
-              windchill_f: 83.7
-              windchill_c: 28.7
-              temp_c: 28.7
-              temp_f: 83.7
-              cloud: 19
-              wind_kph: 15.1
-              wind_mph: 9.4
-              humidity: 58
-              dewpoint_f: 67.3
-              will_it_rain: 0
-              uv: 1
-              heatindex_f: 86.9
-              dewpoint_c: 19.6
-              is_day: 0
-              precip_in: 0
-              heatindex_c: 30.5
-              wind_dir: W
-              gust_mph: 15
-              pressure_in: 29.73
-              chance_of_rain: 0
-              gust_kph: 24.1
-              precip_mm: 0
-              condition:
-                code: 1000
-                icon: //cdn.weatherapi.com/weather/64x64/night/113.png
-                text: Clear
-              will_it_snow: 0
-              vis_km: 10
-              time_epoch: 1658462400
-              time: 2022-07-22 00:00
-              chance_of_snow: 0
-              pressure_mb: 1007
-              vis_miles: 6
-            day:
-              avgvis_km: 10
-              uv: 8
-              avgtemp_f: 87.3
-              avgtemp_c: 30.7
-              daily_chance_of_snow: 0
-              maxtemp_c: 35.9
-              maxtemp_f: 96.6
-              mintemp_c: 26.3
-              avgvis_miles: 6
-              daily_will_it_rain: 0
-              mintemp_f: 79.3
-              totalprecip_in: 0
-              avghumidity: 53
-              condition:
-                code: 1000
-                icon: //cdn.weatherapi.com/weather/64x64/day/113.png
-                text: Sunny
-              maxwind_kph: 20.5
-              maxwind_mph: 12.8
-              daily_chance_of_rain: 0
-              totalprecip_mm: 0
-              daily_will_it_snow: 0
-          - date: 2000-01-23
-            astro:
-              moonset: 03:35 PM
-              moon_illumination: "36"
-              sunrise: 05:44 AM
-              moon_phase: Last Quarter
-              sunset: 08:20 PM
-              moonrise: 12:58 AM
-            date_epoch: 1658448000
-            hour:
-            - feelslike_c: 30.5
-              feelslike_f: 86.9
-              wind_degree: 265
-              windchill_f: 83.7
-              windchill_c: 28.7
-              temp_c: 28.7
-              temp_f: 83.7
-              cloud: 19
-              wind_kph: 15.1
-              wind_mph: 9.4
-              humidity: 58
-              dewpoint_f: 67.3
-              will_it_rain: 0
-              uv: 1
-              heatindex_f: 86.9
-              dewpoint_c: 19.6
-              is_day: 0
-              precip_in: 0
-              heatindex_c: 30.5
-              wind_dir: W
-              gust_mph: 15
-              pressure_in: 29.73
-              chance_of_rain: 0
-              gust_kph: 24.1
-              precip_mm: 0
-              condition:
-                code: 1000
-                icon: //cdn.weatherapi.com/weather/64x64/night/113.png
-                text: Clear
-              will_it_snow: 0
-              vis_km: 10
-              time_epoch: 1658462400
-              time: 2022-07-22 00:00
-              chance_of_snow: 0
-              pressure_mb: 1007
-              vis_miles: 6
-            - feelslike_c: 30.5
-              feelslike_f: 86.9
-              wind_degree: 265
-              windchill_f: 83.7
-              windchill_c: 28.7
-              temp_c: 28.7
-              temp_f: 83.7
-              cloud: 19
-              wind_kph: 15.1
-              wind_mph: 9.4
-              humidity: 58
-              dewpoint_f: 67.3
-              will_it_rain: 0
-              uv: 1
-              heatindex_f: 86.9
-              dewpoint_c: 19.6
-              is_day: 0
-              precip_in: 0
-              heatindex_c: 30.5
-              wind_dir: W
-              gust_mph: 15
-              pressure_in: 29.73
-              chance_of_rain: 0
-              gust_kph: 24.1
-              precip_mm: 0
-              condition:
-                code: 1000
-                icon: //cdn.weatherapi.com/weather/64x64/night/113.png
-                text: Clear
-              will_it_snow: 0
-              vis_km: 10
-              time_epoch: 1658462400
-              time: 2022-07-22 00:00
-              chance_of_snow: 0
-              pressure_mb: 1007
-              vis_miles: 6
-            day:
-              avgvis_km: 10
-              uv: 8
-              avgtemp_f: 87.3
-              avgtemp_c: 30.7
-              daily_chance_of_snow: 0
-              maxtemp_c: 35.9
-              maxtemp_f: 96.6
-              mintemp_c: 26.3
-              avgvis_miles: 6
-              daily_will_it_rain: 0
-              mintemp_f: 79.3
-              totalprecip_in: 0
-              avghumidity: 53
-              condition:
-                code: 1000
-                icon: //cdn.weatherapi.com/weather/64x64/day/113.png
-                text: Sunny
-              maxwind_kph: 20.5
-              maxwind_mph: 12.8
-              daily_chance_of_rain: 0
-              totalprecip_mm: 0
-              daily_will_it_snow: 0
-    inline_response_200_2:
-      properties:
-        location:
-          $ref: '#/components/schemas/location'
-        forecast:
-          $ref: '#/components/schemas/forecast'
-      example:
-        location:
-          localtime: 2022-07-22 16:49
-          country: United States of America
-          localtime_epoch: 1658522976
-          name: New York
-          lon: -74.01
-          region: New York
-          lat: 40.71
-          tz_id: America/New_York
-        forecast:
-          forecastday:
-          - date: 2000-01-23
-            astro:
-              moonset: 03:35 PM
-              moon_illumination: "36"
-              sunrise: 05:44 AM
-              moon_phase: Last Quarter
-              sunset: 08:20 PM
-              moonrise: 12:58 AM
-            date_epoch: 1658448000
-            hour:
-            - feelslike_c: 30.5
-              feelslike_f: 86.9
-              wind_degree: 265
-              windchill_f: 83.7
-              windchill_c: 28.7
-              temp_c: 28.7
-              temp_f: 83.7
-              cloud: 19
-              wind_kph: 15.1
-              wind_mph: 9.4
-              humidity: 58
-              dewpoint_f: 67.3
-              will_it_rain: 0
-              uv: 1
-              heatindex_f: 86.9
-              dewpoint_c: 19.6
-              is_day: 0
-              precip_in: 0
-              heatindex_c: 30.5
-              wind_dir: W
-              gust_mph: 15
-              pressure_in: 29.73
-              chance_of_rain: 0
-              gust_kph: 24.1
-              precip_mm: 0
-              condition:
-                code: 1000
-                icon: //cdn.weatherapi.com/weather/64x64/night/113.png
-                text: Clear
-              will_it_snow: 0
-              vis_km: 10
-              time_epoch: 1658462400
-              time: 2022-07-22 00:00
-              chance_of_snow: 0
-              pressure_mb: 1007
-              vis_miles: 6
-            - feelslike_c: 30.5
-              feelslike_f: 86.9
-              wind_degree: 265
-              windchill_f: 83.7
-              windchill_c: 28.7
-              temp_c: 28.7
-              temp_f: 83.7
-              cloud: 19
-              wind_kph: 15.1
-              wind_mph: 9.4
-              humidity: 58
-              dewpoint_f: 67.3
-              will_it_rain: 0
-              uv: 1
-              heatindex_f: 86.9
-              dewpoint_c: 19.6
-              is_day: 0
-              precip_in: 0
-              heatindex_c: 30.5
-              wind_dir: W
-              gust_mph: 15
-              pressure_in: 29.73
-              chance_of_rain: 0
-              gust_kph: 24.1
-              precip_mm: 0
-              condition:
-                code: 1000
-                icon: //cdn.weatherapi.com/weather/64x64/night/113.png
-                text: Clear
-              will_it_snow: 0
-              vis_km: 10
-              time_epoch: 1658462400
-              time: 2022-07-22 00:00
-              chance_of_snow: 0
-              pressure_mb: 1007
-              vis_miles: 6
-            day:
-              avgvis_km: 10
-              uv: 8
-              avgtemp_f: 87.3
-              avgtemp_c: 30.7
-              daily_chance_of_snow: 0
-              maxtemp_c: 35.9
-              maxtemp_f: 96.6
-              mintemp_c: 26.3
-              avgvis_miles: 6
-              daily_will_it_rain: 0
-              mintemp_f: 79.3
-              totalprecip_in: 0
-              avghumidity: 53
-              condition:
-                code: 1000
-                icon: //cdn.weatherapi.com/weather/64x64/day/113.png
-                text: Sunny
-              maxwind_kph: 20.5
-              maxwind_mph: 12.8
-              daily_chance_of_rain: 0
-              totalprecip_mm: 0
-              daily_will_it_snow: 0
-          - date: 2000-01-23
-            astro:
-              moonset: 03:35 PM
-              moon_illumination: "36"
-              sunrise: 05:44 AM
-              moon_phase: Last Quarter
-              sunset: 08:20 PM
-              moonrise: 12:58 AM
-            date_epoch: 1658448000
-            hour:
-            - feelslike_c: 30.5
-              feelslike_f: 86.9
-              wind_degree: 265
-              windchill_f: 83.7
-              windchill_c: 28.7
-              temp_c: 28.7
-              temp_f: 83.7
-              cloud: 19
-              wind_kph: 15.1
-              wind_mph: 9.4
-              humidity: 58
-              dewpoint_f: 67.3
-              will_it_rain: 0
-              uv: 1
-              heatindex_f: 86.9
-              dewpoint_c: 19.6
-              is_day: 0
-              precip_in: 0
-              heatindex_c: 30.5
-              wind_dir: W
-              gust_mph: 15
-              pressure_in: 29.73
-              chance_of_rain: 0
-              gust_kph: 24.1
-              precip_mm: 0
-              condition:
-                code: 1000
-                icon: //cdn.weatherapi.com/weather/64x64/night/113.png
-                text: Clear
-              will_it_snow: 0
-              vis_km: 10
-              time_epoch: 1658462400
-              time: 2022-07-22 00:00
-              chance_of_snow: 0
-              pressure_mb: 1007
-              vis_miles: 6
-            - feelslike_c: 30.5
-              feelslike_f: 86.9
-              wind_degree: 265
-              windchill_f: 83.7
-              windchill_c: 28.7
-              temp_c: 28.7
-              temp_f: 83.7
-              cloud: 19
-              wind_kph: 15.1
-              wind_mph: 9.4
-              humidity: 58
-              dewpoint_f: 67.3
-              will_it_rain: 0
-              uv: 1
-              heatindex_f: 86.9
-              dewpoint_c: 19.6
-              is_day: 0
-              precip_in: 0
-              heatindex_c: 30.5
-              wind_dir: W
-              gust_mph: 15
-              pressure_in: 29.73
-              chance_of_rain: 0
-              gust_kph: 24.1
-              precip_mm: 0
-              condition:
-                code: 1000
-                icon: //cdn.weatherapi.com/weather/64x64/night/113.png
-                text: Clear
-              will_it_snow: 0
-              vis_km: 10
-              time_epoch: 1658462400
-              time: 2022-07-22 00:00
-              chance_of_snow: 0
-              pressure_mb: 1007
-              vis_miles: 6
-            day:
-              avgvis_km: 10
-              uv: 8
-              avgtemp_f: 87.3
-              avgtemp_c: 30.7
-              daily_chance_of_snow: 0
-              maxtemp_c: 35.9
-              maxtemp_f: 96.6
-              mintemp_c: 26.3
-              avgvis_miles: 6
-              daily_will_it_rain: 0
-              mintemp_f: 79.3
-              totalprecip_in: 0
-              avghumidity: 53
-              condition:
-                code: 1000
-                icon: //cdn.weatherapi.com/weather/64x64/day/113.png
-                text: Sunny
-              maxwind_kph: 20.5
-              maxwind_mph: 12.8
-              daily_chance_of_rain: 0
-              totalprecip_mm: 0
-              daily_will_it_snow: 0
-    inline_response_200_3:
-      properties:
-        location:
-          $ref: '#/components/schemas/location'
-        astronomy:
-          $ref: '#/components/schemas/astronomy'
-      example:
-        location:
-          localtime: 2022-07-22 16:49
-          country: United States of America
-          localtime_epoch: 1658522976
-          name: New York
-          lon: -74.01
-          region: New York
-          lat: 40.71
-          tz_id: America/New_York
-        astronomy:
-          astro:
-            moonset: 04:01 PM
-            moon_illumination: "42"
-            sunrise: 05:10 AM
-            moon_phase: Third Quarter
-            sunset: 09:03 PM
-            moonrise: 12:29 AM
-    current_condition:
-      type: object
-      properties:
-        text:
-          type: string
-          example: Partly cloudy
-        icon:
-          type: string
-          example: //cdn.weatherapi.com/weather/64x64/day/116.png
-        code:
-          type: integer
-          format: int32
-          example: 1003
-      example:
-        code: 1003
-        icon: //cdn.weatherapi.com/weather/64x64/day/116.png
-        text: Partly cloudy
-    current_air_quality:
-      type: object
-      properties:
-        co:
-          type: number
-          example: 293.70001220703125
-        no2:
-          type: number
-          example: 18.5
-        o3:
-          type: number
-          example: 234.60000610351562
-        so2:
-          type: integer
-          format: int32
-          example: 12
-        pm2_5:
-          type: number
-          example: 13.600000381469727
-        pm10:
-          type: integer
-          format: int32
-          example: 15
-        us-epa-index:
-          type: integer
-          format: int32
-          example: 1
-        gb-defra-index:
-          type: integer
-          format: int32
-          example: 2
-      example:
-        no2: 18.5
-        o3: 234.60000610351562
-        us-epa-index: 1
-        so2: 12
-        pm2_5: 13.600000381469727
-        pm10: 15
-        co: 293.70001220703125
-        gb-defra-index: 2
-    forecast_day_condition:
-      type: object
-      properties:
-        text:
-          type: string
-          example: Sunny
-        icon:
-          type: string
-          example: //cdn.weatherapi.com/weather/64x64/day/113.png
-        code:
-          type: integer
-          format: int32
-          example: 1000
-      example:
-        code: 1000
-        icon: //cdn.weatherapi.com/weather/64x64/day/113.png
-        text: Sunny
-    forecast_day:
-      type: object
-      properties:
-        maxtemp_c:
-          type: number
-          example: 35.9
-        maxtemp_f:
-          type: number
-          example: 96.6
-        mintemp_c:
-          type: number
-          example: 26.3
-        mintemp_f:
-          type: number
-          example: 79.3
-        avgtemp_c:
-          type: number
-          example: 30.7
-        avgtemp_f:
-          type: number
-          example: 87.3
-        maxwind_mph:
-          type: number
-          example: 12.8
-        maxwind_kph:
-          type: number
-          example: 20.5
-        totalprecip_mm:
-          type: integer
-          format: int32
-          example: 0
-        totalprecip_in:
-          type: integer
-          format: int32
-          example: 0
-        avgvis_km:
-          type: integer
-          format: int32
-          example: 10
-        avgvis_miles:
-          type: integer
-          format: int32
-          example: 6
-        avghumidity:
-          type: integer
-          format: int32
-          example: 53
-        daily_will_it_rain:
-          type: integer
-          format: int32
-          example: 0
-        daily_chance_of_rain:
-          type: integer
-          format: int32
-          example: 0
-        daily_will_it_snow:
-          type: integer
-          format: int32
-          example: 0
-        daily_chance_of_snow:
-          type: integer
-          format: int32
-          example: 0
-        condition:
-          $ref: '#/components/schemas/forecast_day_condition'
-        uv:
-          type: integer
-          format: int32
-          example: 8
-      example:
-        avgvis_km: 10
-        uv: 8
-        avgtemp_f: 87.3
-        avgtemp_c: 30.7
-        daily_chance_of_snow: 0
-        maxtemp_c: 35.9
-        maxtemp_f: 96.6
-        mintemp_c: 26.3
-        avgvis_miles: 6
-        daily_will_it_rain: 0
-        mintemp_f: 79.3
-        totalprecip_in: 0
-        avghumidity: 53
-        condition:
-          code: 1000
-          icon: //cdn.weatherapi.com/weather/64x64/day/113.png
-          text: Sunny
-        maxwind_kph: 20.5
-        maxwind_mph: 12.8
-        daily_chance_of_rain: 0
-        totalprecip_mm: 0
-        daily_will_it_snow: 0
-    forecast_astro:
-      type: object
-      properties:
-        sunrise:
-          type: string
-          example: 05:44 AM
-        sunset:
-          type: string
-          example: 08:20 PM
-        moonrise:
-          type: string
-          example: 12:58 AM
-        moonset:
-          type: string
-          example: 03:35 PM
-        moon_phase:
-          type: string
-          example: Last Quarter
-        moon_illumination:
-          type: string
-          example: "36"
-      example:
-        moonset: 03:35 PM
-        moon_illumination: "36"
-        sunrise: 05:44 AM
-        moon_phase: Last Quarter
-        sunset: 08:20 PM
-        moonrise: 12:58 AM
-    forecast_condition:
-      type: object
-      properties:
-        text:
-          type: string
-          example: Clear
-        icon:
-          type: string
-          example: //cdn.weatherapi.com/weather/64x64/night/113.png
-        code:
-          type: integer
-          format: int32
-          example: 1000
-      example:
-        code: 1000
-        icon: //cdn.weatherapi.com/weather/64x64/night/113.png
-        text: Clear
-    forecast_hour:
-      type: object
-      properties:
-        time_epoch:
-          type: integer
-          format: int32
-          example: 1658462400
-        time:
-          type: string
-          example: 2022-07-22 00:00
-        temp_c:
-          type: number
-          example: 28.7
-        temp_f:
-          type: number
-          example: 83.7
-        is_day:
-          type: integer
-          format: int32
-          example: 0
-        condition:
-          $ref: '#/components/schemas/forecast_condition'
-        wind_mph:
-          type: number
-          example: 9.4
-        wind_kph:
-          type: number
-          example: 15.1
-        wind_degree:
-          type: integer
-          format: int32
-          example: 265
-        wind_dir:
-          type: string
-          example: W
-        pressure_mb:
-          type: integer
-          format: int32
-          example: 1007
-        pressure_in:
-          type: number
-          example: 29.73
-        precip_mm:
-          type: integer
-          format: int32
-          example: 0
-        precip_in:
-          type: integer
-          format: int32
-          example: 0
-        humidity:
-          type: integer
-          format: int32
-          example: 58
-        cloud:
-          type: integer
-          format: int32
-          example: 19
-        feelslike_c:
-          type: number
-          example: 30.5
-        feelslike_f:
-          type: number
-          example: 86.9
-        windchill_c:
-          type: number
-          example: 28.7
-        windchill_f:
-          type: number
-          example: 83.7
-        heatindex_c:
-          type: number
-          example: 30.5
-        heatindex_f:
-          type: number
-          example: 86.9
-        dewpoint_c:
-          type: number
-          example: 19.6
-        dewpoint_f:
-          type: number
-          example: 67.3
-        will_it_rain:
-          type: integer
-          format: int32
-          example: 0
-        chance_of_rain:
-          type: integer
-          format: int32
-          example: 0
-        will_it_snow:
-          type: integer
-          format: int32
-          example: 0
-        chance_of_snow:
-          type: integer
-          format: int32
-          example: 0
-        vis_km:
-          type: integer
-          format: int32
-          example: 10
-        vis_miles:
-          type: integer
-          format: int32
-          example: 6
-        gust_mph:
-          type: integer
-          format: int32
-          example: 15
-        gust_kph:
-          type: number
-          example: 24.1
-        uv:
-          type: integer
-          format: int32
-          example: 1
-      example:
-        feelslike_c: 30.5
-        feelslike_f: 86.9
-        wind_degree: 265
-        windchill_f: 83.7
-        windchill_c: 28.7
-        temp_c: 28.7
-        temp_f: 83.7
-        cloud: 19
-        wind_kph: 15.1
-        wind_mph: 9.4
-        humidity: 58
-        dewpoint_f: 67.3
-        will_it_rain: 0
-        uv: 1
-        heatindex_f: 86.9
-        dewpoint_c: 19.6
-        is_day: 0
-        precip_in: 0
-        heatindex_c: 30.5
-        wind_dir: W
-        gust_mph: 15
-        pressure_in: 29.73
-        chance_of_rain: 0
-        gust_kph: 24.1
-        precip_mm: 0
-        condition:
-          code: 1000
-          icon: //cdn.weatherapi.com/weather/64x64/night/113.png
-          text: Clear
-        will_it_snow: 0
-        vis_km: 10
-        time_epoch: 1658462400
-        time: 2022-07-22 00:00
-        chance_of_snow: 0
-        pressure_mb: 1007
-        vis_miles: 6
-    forecast_forecastday:
-      type: object
-      properties:
-        date:
-          type: string
-          format: date
-        date_epoch:
-          type: integer
-          format: int32
-          example: 1658448000
-        day:
-          $ref: '#/components/schemas/forecast_day'
-        astro:
-          $ref: '#/components/schemas/forecast_astro'
-        hour:
-          type: array
-          items:
-            $ref: '#/components/schemas/forecast_hour'
-      example:
-        date: 2000-01-23
-        astro:
-          moonset: 03:35 PM
-          moon_illumination: "36"
-          sunrise: 05:44 AM
-          moon_phase: Last Quarter
-          sunset: 08:20 PM
-          moonrise: 12:58 AM
-        date_epoch: 1658448000
-        hour:
-        - feelslike_c: 30.5
-          feelslike_f: 86.9
-          wind_degree: 265
-          windchill_f: 83.7
-          windchill_c: 28.7
-          temp_c: 28.7
-          temp_f: 83.7
-          cloud: 19
-          wind_kph: 15.1
-          wind_mph: 9.4
-          humidity: 58
-          dewpoint_f: 67.3
-          will_it_rain: 0
-          uv: 1
-          heatindex_f: 86.9
-          dewpoint_c: 19.6
-          is_day: 0
-          precip_in: 0
-          heatindex_c: 30.5
-          wind_dir: W
-          gust_mph: 15
-          pressure_in: 29.73
-          chance_of_rain: 0
-          gust_kph: 24.1
-          precip_mm: 0
-          condition:
-            code: 1000
-            icon: //cdn.weatherapi.com/weather/64x64/night/113.png
-            text: Clear
-          will_it_snow: 0
-          vis_km: 10
-          time_epoch: 1658462400
-          time: 2022-07-22 00:00
-          chance_of_snow: 0
-          pressure_mb: 1007
-          vis_miles: 6
-        - feelslike_c: 30.5
-          feelslike_f: 86.9
-          wind_degree: 265
-          windchill_f: 83.7
-          windchill_c: 28.7
-          temp_c: 28.7
-          temp_f: 83.7
-          cloud: 19
-          wind_kph: 15.1
-          wind_mph: 9.4
-          humidity: 58
-          dewpoint_f: 67.3
-          will_it_rain: 0
-          uv: 1
-          heatindex_f: 86.9
-          dewpoint_c: 19.6
-          is_day: 0
-          precip_in: 0
-          heatindex_c: 30.5
-          wind_dir: W
-          gust_mph: 15
-          pressure_in: 29.73
-          chance_of_rain: 0
-          gust_kph: 24.1
-          precip_mm: 0
-          condition:
-            code: 1000
-            icon: //cdn.weatherapi.com/weather/64x64/night/113.png
-            text: Clear
-          will_it_snow: 0
-          vis_km: 10
-          time_epoch: 1658462400
-          time: 2022-07-22 00:00
-          chance_of_snow: 0
-          pressure_mb: 1007
-          vis_miles: 6
-        day:
-          avgvis_km: 10
-          uv: 8
-          avgtemp_f: 87.3
-          avgtemp_c: 30.7
-          daily_chance_of_snow: 0
-          maxtemp_c: 35.9
-          maxtemp_f: 96.6
-          mintemp_c: 26.3
-          avgvis_miles: 6
-          daily_will_it_rain: 0
-          mintemp_f: 79.3
-          totalprecip_in: 0
-          avghumidity: 53
-          condition:
-            code: 1000
-            icon: //cdn.weatherapi.com/weather/64x64/day/113.png
-            text: Sunny
-          maxwind_kph: 20.5
-          maxwind_mph: 12.8
-          daily_chance_of_rain: 0
-          totalprecip_mm: 0
-          daily_will_it_snow: 0
-    alerts_alert:
-      type: object
-      properties:
-        headline:
-          type: string
-          example: NWS New York City - Upton (Long Island and New York City)
-        msgtype:
-          type: string
-        severity:
-          type: string
-        urgency:
-          type: string
-        areas:
-          type: string
-        category:
-          type: string
-          example: Extreme temperature value
-        certainty:
-          type: string
-        event:
-          type: string
-          example: Heat Advisory
-        note:
-          type: string
-        effective:
-          type: string
-          format: date-time
-          example: 2022-07-21T19:38:00Z
-        expires:
-          type: string
-          format: date-time
-          example: 2022-07-25T00:00:00Z
-        desc:
-          type: string
-          example: '...HEAT ADVISORY REMAINS IN EFFECT UNTIL 8 PM EDT SUNDAY... *
-            WHAT...Heat index values up to 105. * WHERE...Eastern Passaic Hudson Western
-            Bergen Western Essex Eastern Bergen and Eastern Essex Counties. * WHEN...Until
-            8 PM EDT Sunday. * IMPACTS...High temperatures and high humidity may cause
-            heat illnesses to occur.'
-        instruction:
-          type: string
-          example: ""
-      example:
-        severity: severity
-        note: note
-        expires: 2022-07-25T00:00:00Z
-        certainty: certainty
-        areas: areas
-        effective: 2022-07-21T19:38:00Z
-        urgency: urgency
-        instruction: ""
-        category: Extreme temperature value
-        event: Heat Advisory
-        headline: NWS New York City - Upton (Long Island and New York City)
-        msgtype: msgtype
-        desc: '...HEAT ADVISORY REMAINS IN EFFECT UNTIL 8 PM EDT SUNDAY... * WHAT...Heat
-          index values up to 105. * WHERE...Eastern Passaic Hudson Western Bergen
-          Western Essex Eastern Bergen and Eastern Essex Counties. * WHEN...Until
-          8 PM EDT Sunday. * IMPACTS...High temperatures and high humidity may cause
-          heat illnesses to occur.'
-    astronomy_astro:
-      type: object
-      properties:
-        sunrise:
-          type: string
-          example: 05:10 AM
-        sunset:
-          type: string
-          example: 09:03 PM
-        moonrise:
-          type: string
-          example: 12:29 AM
-        moonset:
-          type: string
-          example: 04:01 PM
-        moon_phase:
-          type: string
-          example: Third Quarter
-        moon_illumination:
-          type: string
-          example: "42"
-      example:
-        moonset: 04:01 PM
-        moon_illumination: "42"
-        sunrise: 05:10 AM
-        moon_phase: Third Quarter
-        sunset: 09:03 PM
-        moonrise: 12:29 AM
-  responses:
-    "400":
-      description: "Error code 1003: Parameter 'q' not provided.<br />Error code 1005:\
-        \ API request url is invalid.<br />Error code 1006: No location found matching\
-        \ parameter 'q'<br />Error code 9999: Internal application error."
-      content:
-        application/json:
+            \ />Error code 2008: API key has been disabled.<br />Error code 2009:\
+            \ API key does not have access to the resource. Please check pricing page\
+            \ for what is allowed in your API subscription plan."
           schema:
-            $ref: '#/components/schemas/error400'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/error400'
-    "401":
-      description: "Error code 1002: API key not provided.<br />Error code 2006: API\
-        \ key provided is invalid"
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/error401'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/error401'
-    "403":
-      description: "Error code 2007: API key has exceeded calls per month quota.<br\
-        \ />Error code 2008: API key has been disabled."
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/error403'
-        application/xml:
-          schema:
-            $ref: '#/components/schemas/error403'
-  securitySchemes:
-    ApiKeyAuth:
-      type: apiKey
-      name: key
-      in: query
+            $ref: "#/definitions/error403"
+securityDefinitions:
+  ApiKeyAuth:
+    type: "apiKey"
+    name: "key"
+    in: "query"
+definitions:
+  search:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int32"
+        example: 2796590
+      name:
+        type: "string"
+        example: "Holborn"
+      region:
+        type: "string"
+        example: "Camden Greater London"
+      country:
+        type: "string"
+        example: "United Kingdom"
+      lat:
+        type: "number"
+        example: 51.52000000000000312638803734444081783294677734375
+      lon:
+        type: "number"
+        example: -0.11999999999999999555910790149937383830547332763671875
+      url:
+        type: "string"
+        example: "holborn-camden-greater-london-united-kingdom"
+  ArrayOfSearch:
+    type: "array"
+    items:
+      $ref: "#/definitions/search"
+  location:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        example: "New York"
+      region:
+        type: "string"
+        example: "New York"
+      country:
+        type: "string"
+        example: "United States of America"
+      lat:
+        type: "number"
+        example: 40.71000000000000085265128291212022304534912109375
+      lon:
+        type: "number"
+        example: -74.0100000000000051159076974727213382720947265625
+      tz_id:
+        type: "string"
+        example: "America/New_York"
+      localtime_epoch:
+        type: "integer"
+        format: "int32"
+        example: 1658522976
+      localtime:
+        type: "string"
+        example: "2022-07-22 16:49"
+    example:
+      localtime: "2022-07-22 16:49"
+      country: "United States of America"
+      localtime_epoch: 1658522976
+      name: "New York"
+      lon: -74.0100000000000051159076974727213382720947265625
+      region: "New York"
+      lat: 40.71000000000000085265128291212022304534912109375
+      tz_id: "America/New_York"
+  current:
+    type: "object"
+    properties:
+      last_updated_epoch:
+        type: "integer"
+        format: "int32"
+        example: 1658522700
+      last_updated:
+        type: "string"
+        example: "2022-07-22 16:45"
+      temp_c:
+        type: "number"
+        example: 34.39999999999999857891452847979962825775146484375
+      temp_f:
+        type: "number"
+        example: 93.900000000000005684341886080801486968994140625
+      is_day:
+        type: "integer"
+        format: "int32"
+        example: 1
+      condition:
+        $ref: "#/definitions/current_condition"
+      wind_mph:
+        type: "number"
+        example: 16.10000000000000142108547152020037174224853515625
+      wind_kph:
+        type: "number"
+        example: 25.89999999999999857891452847979962825775146484375
+      wind_degree:
+        type: "number"
+        example: 180
+      wind_dir:
+        type: "string"
+        example: "S"
+      pressure_mb:
+        type: "number"
+        example: 1011
+      pressure_in:
+        type: "number"
+        example: 29.85000000000000142108547152020037174224853515625
+      precip_mm:
+        type: "number"
+        example: 0
+      precip_in:
+        type: "number"
+        example: 0
+      humidity:
+        type: "number"
+        example: 31
+      cloud:
+        type: "number"
+        example: 75
+      feelslike_c:
+        type: "number"
+        example: 37
+      feelslike_f:
+        type: "number"
+        example: 98.599999999999994315658113919198513031005859375
+      vis_km:
+        type: "number"
+        example: 16
+      vis_miles:
+        type: "number"
+        example: 9
+      uv:
+        type: "integer"
+        format: "int32"
+        example: 8
+      gust_mph:
+        type: "number"
+        example: 11.5999999999999996447286321199499070644378662109375
+      gust_kph:
+        type: "number"
+        example: 18.699999999999999289457264239899814128875732421875
+      air_quality:
+        $ref: "#/definitions/current_air_quality"
+  forecast:
+    type: "object"
+    properties:
+      forecastday:
+        type: "array"
+        items:
+          $ref: "#/definitions/forecast_forecastday"
+  marine:
+    type: "object"
+    properties:
+      forecastday:
+        type: "array"
+        items:
+          $ref: "#/definitions/marine_forecastday"
+  alerts:
+    type: "object"
+    properties:
+      alert:
+        type: "array"
+        items:
+          $ref: "#/definitions/alerts_alert"
+  ip:
+    type: "object"
+    properties:
+      ip:
+        type: "string"
+        example: "185.249.71.82"
+      type:
+        type: "string"
+        example: "ipv4"
+      continent_code:
+        type: "string"
+        example: "EU"
+      continent_name:
+        type: "string"
+        example: "Europe"
+      country_code:
+        type: "string"
+        example: "GB"
+      country_name:
+        type: "string"
+        example: "United Kingdom"
+      is_eu:
+        type: "string"
+        example: "false"
+      geoname_id:
+        type: "integer"
+        format: "int32"
+        example: 2643743
+      city:
+        type: "string"
+        example: "London"
+      region:
+        type: "string"
+      lat:
+        type: "number"
+        example: 51.52640000000000242152964347042143344879150390625
+      lon:
+        type: "number"
+        example: -0.08409999999999999420463581145668285898864269256591796875
+      tz_id:
+        type: "string"
+        example: "Europe/London"
+      localtime_epoch:
+        type: "integer"
+        format: "int32"
+        example: 1658520645
+      localtime:
+        type: "string"
+        example: "2022-07-22 21:10"
+    example:
+      continent_name: "Europe"
+      localtime: "2022-07-22 21:10"
+      localtime_epoch: 1658520645
+      city: "London"
+      ip: "185.249.71.82"
+      continent_code: "EU"
+      lon: -0.08409999999999999420463581145668285898864269256591796875
+      type: "ipv4"
+      geoname_id: 2643743
+      tz_id: "Europe/London"
+      country_code: "GB"
+      country_name: "United Kingdom"
+      is_eu: "false"
+      region: "region"
+      lat: 51.52640000000000242152964347042143344879150390625
+  astronomy:
+    type: "object"
+    properties:
+      astro:
+        $ref: "#/definitions/astronomy_astro"
+  error400:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+        example: 1003
+      message:
+        type: "string"
+        example: "Parameter 'q' not provided."
+  error401:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+        example: 1002
+      message:
+        type: "string"
+        example: "API key not provided"
+  error403:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+        example: 2007
+      message:
+        type: "string"
+        example: "API key has exceeded calls per month quota."
+  current_condition:
+    type: "object"
+    properties:
+      text:
+        type: "string"
+        example: "Partly cloudy"
+      icon:
+        type: "string"
+        example: "//cdn.weatherapi.com/weather/64x64/day/116.png"
+      code:
+        type: "integer"
+        format: "int32"
+        example: 1003
+  current_air_quality:
+    type: "object"
+    properties:
+      co:
+        type: "number"
+        example: 293.70001220703125
+      no2:
+        type: "number"
+        example: 18.5
+      o3:
+        type: "number"
+        example: 234.600006103515625
+      so2:
+        type: "number"
+        example: 12
+      pm2_5:
+        type: "number"
+        example: 13.6000003814697265625
+      pm10:
+        type: "number"
+        example: 15
+      us-epa-index:
+        type: "integer"
+        format: "int32"
+        example: 1
+      gb-defra-index:
+        type: "integer"
+        format: "int32"
+        example: 2
+  forecast_day_condition:
+    type: "object"
+    properties:
+      text:
+        type: "string"
+        example: "Sunny"
+      icon:
+        type: "string"
+        example: "//cdn.weatherapi.com/weather/64x64/day/113.png"
+      code:
+        type: "integer"
+        format: "int32"
+        example: 1000
+  forecast_day:
+    type: "object"
+    properties:
+      maxtemp_c:
+        type: "number"
+        example: 35.89999999999999857891452847979962825775146484375
+      maxtemp_f:
+        type: "number"
+        example: 96.599999999999994315658113919198513031005859375
+      mintemp_c:
+        type: "number"
+        example: 26.300000000000000710542735760100185871124267578125
+      mintemp_f:
+        type: "number"
+        example: 79.2999999999999971578290569595992565155029296875
+      avgtemp_c:
+        type: "number"
+        example: 30.699999999999999289457264239899814128875732421875
+      avgtemp_f:
+        type: "number"
+        example: 87.2999999999999971578290569595992565155029296875
+      maxwind_mph:
+        type: "number"
+        example: 12.800000000000000710542735760100185871124267578125
+      maxwind_kph:
+        type: "number"
+        example: 20.5
+      totalprecip_mm:
+        type: "number"
+        example: 0
+      totalprecip_in:
+        type: "number"
+        example: 0
+      avgvis_km:
+        type: "number"
+        example: 10
+      avgvis_miles:
+        type: "number"
+        example: 6
+      avghumidity:
+        type: "number"
+        example: 53
+      daily_will_it_rain:
+        type: "integer"
+        format: "int32"
+        example: 0
+      daily_chance_of_rain:
+        type: "number"
+        example: 0
+      daily_will_it_snow:
+        type: "integer"
+        format: "int32"
+        example: 0
+      daily_chance_of_snow:
+        type: "number"
+        example: 0
+      condition:
+        $ref: "#/definitions/forecast_day_condition"
+      uv:
+        type: "integer"
+        format: "int32"
+        example: 8
+  forecast_astro:
+    type: "object"
+    properties:
+      sunrise:
+        type: "string"
+        example: "05:44 AM"
+      sunset:
+        type: "string"
+        example: "08:20 PM"
+      moonrise:
+        type: "string"
+        example: "12:58 AM"
+      moonset:
+        type: "string"
+        example: "03:35 PM"
+      moon_phase:
+        type: "string"
+        example: "Last Quarter"
+      moon_illumination:
+        type: "string"
+        example: "36"
+  forecast_condition:
+    type: "object"
+    properties:
+      text:
+        type: "string"
+        example: "Clear"
+      icon:
+        type: "string"
+        example: "//cdn.weatherapi.com/weather/64x64/night/113.png"
+      code:
+        type: "integer"
+        format: "int32"
+        example: 1000
+  forecast_hour:
+    type: "object"
+    properties:
+      time_epoch:
+        type: "integer"
+        format: "int32"
+        example: 1658462400
+      time:
+        type: "string"
+        example: "2022-07-22 00:00"
+      temp_c:
+        type: "number"
+        example: 28.699999999999999289457264239899814128875732421875
+      temp_f:
+        type: "number"
+        example: 83.7000000000000028421709430404007434844970703125
+      is_day:
+        type: "integer"
+        format: "int32"
+        example: 0
+      condition:
+        $ref: "#/definitions/forecast_condition"
+      wind_mph:
+        type: "number"
+        example: 9.4000000000000003552713678800500929355621337890625
+      wind_kph:
+        type: "number"
+        example: 15.0999999999999996447286321199499070644378662109375
+      wind_degree:
+        type: "number"
+        example: 265
+      wind_dir:
+        type: "string"
+        example: "W"
+      pressure_mb:
+        type: "number"
+        example: 1007
+      pressure_in:
+        type: "number"
+        example: 29.730000000000000426325641456060111522674560546875
+      precip_mm:
+        type: "number"
+        example: 0
+      precip_in:
+        type: "number"
+        example: 0
+      humidity:
+        type: "number"
+        example: 58
+      cloud:
+        type: "number"
+        example: 19
+      feelslike_c:
+        type: "number"
+        example: 30.5
+      feelslike_f:
+        type: "number"
+        example: 86.900000000000005684341886080801486968994140625
+      windchill_c:
+        type: "number"
+        example: 28.699999999999999289457264239899814128875732421875
+      windchill_f:
+        type: "number"
+        example: 83.7000000000000028421709430404007434844970703125
+      heatindex_c:
+        type: "number"
+        example: 30.5
+      heatindex_f:
+        type: "number"
+        example: 86.900000000000005684341886080801486968994140625
+      dewpoint_c:
+        type: "number"
+        example: 19.60000000000000142108547152020037174224853515625
+      dewpoint_f:
+        type: "number"
+        example: 67.2999999999999971578290569595992565155029296875
+      will_it_rain:
+        type: "integer"
+        format: "int32"
+        example: 0
+      chance_of_rain:
+        type: "number"
+        example: 0
+      will_it_snow:
+        type: "integer"
+        format: "int32"
+        example: 0
+      chance_of_snow:
+        type: "number"
+        example: 0
+      vis_km:
+        type: "number"
+        example: 10
+      vis_miles:
+        type: "number"
+        example: 6
+      gust_mph:
+        type: "number"
+        example: 15
+      gust_kph:
+        type: "number"
+        example: 24.10000000000000142108547152020037174224853515625
+      uv:
+        type: "integer"
+        format: "int32"
+        example: 1
+  forecast_forecastday:
+    type: "object"
+    properties:
+      date:
+        type: "string"
+        format: "date"
+        example: "2022-07-22T00:00:00.000Z"
+      date_epoch:
+        type: "integer"
+        format: "int32"
+        example: 1658448000
+      day:
+        $ref: "#/definitions/forecast_day"
+      astro:
+        $ref: "#/definitions/forecast_astro"
+      hour:
+        type: "array"
+        items:
+          $ref: "#/definitions/forecast_hour"
+  marine_hour:
+    type: "object"
+    properties:
+      time_epoch:
+        type: "integer"
+        format: "int32"
+        example: 1658462400
+      time:
+        type: "string"
+        example: "2022-07-22 00:00"
+      temp_c:
+        type: "number"
+        example: 28.699999999999999289457264239899814128875732421875
+      temp_f:
+        type: "number"
+        example: 83.7000000000000028421709430404007434844970703125
+      is_day:
+        type: "integer"
+        format: "int32"
+        example: 0
+      condition:
+        $ref: "#/definitions/forecast_condition"
+      wind_mph:
+        type: "number"
+        example: 9.4000000000000003552713678800500929355621337890625
+      wind_kph:
+        type: "number"
+        example: 15.0999999999999996447286321199499070644378662109375
+      wind_degree:
+        type: "number"
+        example: 265
+      wind_dir:
+        type: "string"
+        example: "W"
+      pressure_mb:
+        type: "number"
+        example: 1007
+      pressure_in:
+        type: "number"
+        example: 29.730000000000000426325641456060111522674560546875
+      precip_mm:
+        type: "number"
+        example: 0
+      precip_in:
+        type: "number"
+        example: 0
+      humidity:
+        type: "number"
+        example: 58
+      cloud:
+        type: "number"
+        example: 19
+      feelslike_c:
+        type: "number"
+        example: 30.5
+      feelslike_f:
+        type: "number"
+        example: 86.900000000000005684341886080801486968994140625
+      windchill_c:
+        type: "number"
+        example: 28.699999999999999289457264239899814128875732421875
+      windchill_f:
+        type: "number"
+        example: 83.7000000000000028421709430404007434844970703125
+      heatindex_c:
+        type: "number"
+        example: 30.5
+      heatindex_f:
+        type: "number"
+        example: 86.900000000000005684341886080801486968994140625
+      dewpoint_c:
+        type: "number"
+        example: 19.60000000000000142108547152020037174224853515625
+      dewpoint_f:
+        type: "number"
+        example: 67.2999999999999971578290569595992565155029296875
+      will_it_rain:
+        type: "integer"
+        format: "int32"
+        example: 0
+      chance_of_rain:
+        type: "number"
+        example: 0
+      will_it_snow:
+        type: "integer"
+        format: "int32"
+        example: 0
+      chance_of_snow:
+        type: "number"
+        example: 0
+      vis_km:
+        type: "number"
+        example: 10
+      vis_miles:
+        type: "number"
+        example: 6
+      gust_mph:
+        type: "number"
+        example: 15
+      gust_kph:
+        type: "number"
+        example: 24.10000000000000142108547152020037174224853515625
+      sig_ht_mt:
+        type: "number"
+        example: 24.10000000000000142108547152020037174224853515625
+      swell_ht_mt:
+        type: "number"
+        example: 24.10000000000000142108547152020037174224853515625
+      swell_ht_ft:
+        type: "number"
+        example: 24.10000000000000142108547152020037174224853515625
+      swell_dir:
+        type: "number"
+        example: 24.10000000000000142108547152020037174224853515625
+      swell_dir_16_point:
+        type: "number"
+        example: 24.10000000000000142108547152020037174224853515625
+      swell_period_secs:
+        type: "number"
+        example: 24.10000000000000142108547152020037174224853515625
+      uv:
+        type: "integer"
+        format: "int32"
+        example: 1
+  marine_forecastday:
+    type: "object"
+    properties:
+      date:
+        type: "string"
+        format: "date"
+        example: "2022-07-22T00:00:00.000Z"
+      date_epoch:
+        type: "integer"
+        format: "int32"
+        example: 1658448000
+      day:
+        $ref: "#/definitions/forecast_day"
+      astro:
+        $ref: "#/definitions/forecast_astro"
+      hour:
+        type: "array"
+        items:
+          $ref: "#/definitions/marine_hour"
+  alerts_alert:
+    type: "object"
+    properties:
+      headline:
+        type: "string"
+        example: "NWS New York City - Upton (Long Island and New York City)"
+      msgtype:
+        type: "string"
+      severity:
+        type: "string"
+      urgency:
+        type: "string"
+      areas:
+        type: "string"
+      category:
+        type: "string"
+        example: "Extreme temperature value"
+      certainty:
+        type: "string"
+      event:
+        type: "string"
+        example: "Heat Advisory"
+      note:
+        type: "string"
+      effective:
+        type: "string"
+        format: "date-time"
+        example: "2022-07-21T19:38:00.000Z"
+      expires:
+        type: "string"
+        format: "date-time"
+        example: "2022-07-25T00:00:00.000Z"
+      desc:
+        type: "string"
+        example: "...HEAT ADVISORY REMAINS IN EFFECT UNTIL 8 PM EDT SUNDAY... * WHAT...Heat\
+          \ index values up to 105. * WHERE...Eastern Passaic Hudson Western Bergen\
+          \ Western Essex Eastern Bergen and Eastern Essex Counties. * WHEN...Until\
+          \ 8 PM EDT Sunday. * IMPACTS...High temperatures and high humidity may cause\
+          \ heat illnesses to occur."
+      instruction:
+        type: "string"
+        example: ""
+  astronomy_astro:
+    type: "object"
+    properties:
+      sunrise:
+        type: "string"
+        example: "05:10 AM"
+      sunset:
+        type: "string"
+        example: "09:03 PM"
+      moonrise:
+        type: "string"
+        example: "12:29 AM"
+      moonset:
+        type: "string"
+        example: "04:01 PM"
+      moon_phase:
+        type: "string"
+        example: "Third Quarter"
+      moon_illumination:
+        type: "string"
+        example: "42"
+responses:
+  "400":
+    description: "Error code 1003: Parameter 'q' not provided.<br />Error code 1005:\
+      \ API request url is invalid.<br />Error code 1006: No location found matching\
+      \ parameter 'q'<br />Error code 9000: Json body passed in bulk request is invalid.\
+      \ Please make sure it is valid json with utf-8 encoding.<br />Error code 9001:\
+      \ Json body contains too many locations for bulk request. Please keep it below\
+      \ 50 in a single request.<br />Error code 9999: Internal application error."
+    schema:
+      $ref: "#/definitions/error400"
+  "401":
+    description: "Error code 1002: API key not provided.<br />Error code 2006: API\
+      \ key provided is invalid"
+    schema:
+      $ref: "#/definitions/error401"
+  "403":
+    description: "Error code 2007: API key has exceeded calls per month quota.<br\
+      \ />Error code 2008: API key has been disabled.<br />Error code 2009: API key\
+      \ does not have access to the resource. Please check pricing page for what is\
+      \ allowed in your API subscription plan."
+    schema:
+      $ref: "#/definitions/error403"
 x-explorer-enabled: true
